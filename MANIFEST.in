@@ -1,0 +1,3 @@
+include README.rst
+include LICENSE
+include sqlserver/regex_clr.dll
