@@ -12,8 +12,8 @@ class DatabaseOperations(sqlserver_ado.operations.DatabaseOperations):
         """
         return min(len(objs), 2100 // len(fields), 1000)
 
-     def for_update_sql(self, nowait=False):
-         if nowait:
-             return "WITH (ROWLOCK, UPDLOCK, NOWAIT)"
-         else:
-             return "WITH (ROWLOCK, UPDLOCK)"
+    def for_update_sql(self, nowait=False):
+        if nowait:
+            return "WITH (ROWLOCK, UPDLOCK, NOWAIT)"
+        else:
+            return "WITH (ROWLOCK, UPDLOCK)"
