@@ -110,7 +110,7 @@ ALWAYS_INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.sessions',
     'sqlserver',
-    'sqlserver.sql_app',
+    'sqlserver_ado.sql_app',
 ]
 
 def get_test_modules():
