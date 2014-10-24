@@ -31,7 +31,7 @@ else:
     raise Exception('Both ado and pytds are not available, to install pytds run pip install python-tds')
 
 from sqlserver_ado.introspection import DatabaseIntrospection
-from sqlserver_ado.operations import DatabaseOperations
+from .operations import DatabaseOperations
 from .creation import DatabaseCreation
 try:
     from sqlserver_ado.schema import DatabaseSchemaEditor
