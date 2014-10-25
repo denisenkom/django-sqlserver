@@ -1,10 +1,5 @@
 from __future__ import absolute_import, unicode_literals
 
-try:
-    from itertools import zip_longest
-except ImportError:
-    from itertools import izip_longest as zip_longest
-
 import django
 from django.db.utils import DatabaseError
 from django.db.transaction import TransactionManagementError
@@ -49,7 +44,7 @@ _re_col_placeholder = re.compile(r'\{_placeholder_(\d+)\}')
 
 
 def _break(s, find):
-    """Break a string s into the part before the substring to find, 
+    """Break a string s into the part before the substring to find,
     and the part including and after the substring."""
     i = s.find(find)
     return s[:i], s[i:]
@@ -286,16 +281,16 @@ class SQLCompiler(sqlserver_ado.compiler.SQLCompiler):
         raw_sql, fields = self._as_sql(
             with_limits=False,
             with_col_aliases=with_col_aliases)
-        
+
         # Check for high mark only and replace with "TOP"
         if self.query.high_mark is not None and not self.query.low_mark:
             _select = 'SELECT'
             if self.query.distinct:
                 _select += ' DISTINCT'
-            
+
             sql = re.sub(r'(?i)^{0}'.format(_select), '{0} TOP {1}'.format(_select, self.query.high_mark), raw_sql, 1)
             return sql, fields
-            
+
         # Else we have limits; rewrite the query using ROW_NUMBER()
         self._using_row_number = True
 
@@ -339,7 +334,7 @@ class SQLCompiler(sqlserver_ado.compiler.SQLCompiler):
             inner=inner_select,
             where=where_row_num,
         )
-        
+
         return sql, fields
 
     def _fix_slicing_order(self, outer_fields, inner_select, order, inner_table_name):
@@ -393,11 +388,11 @@ class SQLCompiler(sqlserver_ado.compiler.SQLCompiler):
     def _alias_columns(self, sql):
         """Return tuple of SELECT and FROM clauses, aliasing duplicate column names."""
         qn = self.connection.ops.quote_name
-        
+
         outer = list()
         inner = list()
         names_seen = list()
-        
+
         # replace all parens with placeholders
         paren_depth, paren_buf = 0, ['']
         parens, i = {}, 0
@@ -410,23 +405,23 @@ class SQLCompiler(sqlserver_ado.compiler.SQLCompiler):
                 paren_depth -= 1
                 key = '_placeholder_{0}'.format(i)
                 buf = paren_buf.pop()
-                
+
                 # store the expanded paren string
                 parens[key] = buf.format(**parens)
                 paren_buf[paren_depth] += '({' + key + '})'
             else:
                 paren_buf[paren_depth] += ch
-    
+
         def _replace_sub(col):
             """Replace all placeholders with expanded values"""
             while _re_col_placeholder.search(col):
                 col = col.format(**parens)
             return col
-    
+
         temp_sql = ''.join(paren_buf)
-    
+
         select_list, from_clause = _break(temp_sql, ' FROM [')
-            
+
         for col in [x.strip() for x in select_list.split(',')]:
             match = _re_pat_col.search(col)
             if match:

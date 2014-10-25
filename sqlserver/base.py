@@ -3,10 +3,6 @@ from __future__ import absolute_import, unicode_literals
 
 import warnings
 
-from django.core.exceptions import ImproperlyConfigured, ValidationError
-from django.db.utils import InterfaceError as DjangoInterfaceError
-from django.utils.functional import cached_property
-from django.utils import six
 from django.utils.timezone import utc
 
 import sqlserver_ado
@@ -14,7 +10,7 @@ import sqlserver_ado.base
 
 try:
     from sqlserver_ado import dbapi as ado_dbapi
-    import pythoncom
+    __import__('pythoncom')
 except ImportError:
     ado_dbapi = None
 
@@ -138,7 +134,7 @@ class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
             'failover_partner': options.get('failover_partner', None),
             'use_tz': utc if getattr(settings, 'USE_TZ', False) else None,
          }
- 
+
         for opt in _SUPPORTED_OPTIONS:
             if opt in options:
                 conn_params[opt] = options[opt]
