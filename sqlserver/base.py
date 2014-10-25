@@ -33,10 +33,6 @@ else:
 from sqlserver_ado.introspection import DatabaseIntrospection
 from .operations import DatabaseOperations
 from .creation import DatabaseCreation
-try:
-    from sqlserver_ado.schema import DatabaseSchemaEditor
-except ImportError:
-    DatabaseSchemaEditor = None
 
 try:
     import pytz
@@ -217,4 +213,5 @@ class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
 
     def schema_editor(self, *args, **kwargs):
         """Returns a new instance of this backend's SchemaEditor"""
+        from .schema import DatabaseSchemaEditor
         return DatabaseSchemaEditor(self, *args, **kwargs)
