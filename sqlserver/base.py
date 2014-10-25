@@ -176,6 +176,8 @@ class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
             self.features.supports_microsecond_precision = True
         if self.settings_dict["OPTIONS"].get("allow_nulls_in_unique_constraints", True):
             self.features.ignores_nulls_in_unique_constraints = True
+            self.features.supports_nullable_unique_constraints = True
+            self.features.supports_partially_nullable_unique_constraints = True
 
     def create_cursor_pytds(self):
         """Creates a cursor. Assumes that a connection is established."""
