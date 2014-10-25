@@ -1,8 +1,5 @@
 import os
 import re
-import sys
-from fnmatch import fnmatchcase
-from distutils.util import convert_path
 from setuptools import setup
 
 
