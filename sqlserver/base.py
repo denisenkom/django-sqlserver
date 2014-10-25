@@ -101,7 +101,7 @@ class DatabaseFeatures(sqlserver_ado.base.DatabaseFeatures):
     }
 
     has_select_for_update = True
-    has_select_for_update_nowait = False
+    has_select_for_update_nowait = True
 
 
 class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
