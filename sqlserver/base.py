@@ -74,46 +74,6 @@ class _CursorWrapper(object):
 
 
 class DatabaseFeatures(sqlserver_ado.base.DatabaseFeatures):
-    uses_custom_query_class = True
-    has_bulk_insert = True
-
-    # DateTimeField doesn't support timezones, only DateTimeOffsetField
-    supports_timezones = False
-    supports_sequence_reset = False
-
-    can_return_id_from_insert = True
-
-    supports_regex_backreferencing = False
-
-    supports_tablespaces = True
-
-    # Django < 1.7
-    ignores_nulls_in_unique_constraints = False
-    # Django >= 1.7
-    supports_nullable_unique_constraints = False
-    supports_partially_nullable_unique_constraints = False
-
-    can_introspect_autofield = True
-    can_introspect_small_integer_field = True
-
-    supports_subqueries_in_group_by = False
-
-    allow_sliced_subqueries = False
-
-    uses_savepoints = True
-
-    supports_paramstyle_pyformat = False
-
-    closed_cursor_error_class = DjangoInterfaceError
-
-    # connection_persists_old_columns = True
-
-    requires_literal_defaults = True
-
-    @cached_property
-    def has_zoneinfo_database(self):
-        return pytz is not None
-
     # Dict of test import path and list of versions on which it fails
     failing_tests = {
         # Some tests are known to fail with django-mssql.
@@ -146,20 +106,6 @@ class DatabaseFeatures(sqlserver_ado.base.DatabaseFeatures):
 
     has_select_for_update = True
     has_select_for_update_nowait = False
-
-
-def is_ip_address(value):
-    """
-    Returns True if value is a valid IP address, otherwise False.
-    """
-    # IPv6 added with Django 1.4
-    from django.core.validators import validate_ipv46_address as ip_validator
-
-    try:
-        ip_validator(value)
-    except ValidationError:
-        return False
-    return True
 
 
 class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
