@@ -150,7 +150,7 @@ class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
     def get_new_connection(self, conn_params):
         """Opens a connection to the database."""
         self.__connection_string = conn_params.get('connection_string', '')
-        conn = Database.connect(**conn_params)
+        conn = self.Database.connect(**conn_params)
         return conn
 
     def init_connection_state(self):
