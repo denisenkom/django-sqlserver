@@ -5,12 +5,15 @@ try:
 except ImportError:
     from itertools import izip_longest as zip_longest
 
+import django
 from django.db.utils import DatabaseError
 from django.db.transaction import TransactionManagementError
 from django.db.models.sql import compiler
 import re
 import six
 import sqlserver_ado.compiler
+
+NEEDS_AGGREGATES_FIX = django.VERSION[:2] < (1, 7)
 
 _re_order_limit_offset = re.compile(
     r'(?:ORDER BY\s+(.+?))?\s*(?:LIMIT\s+(\d+))?\s*(?:OFFSET\s+(\d+))?$')
@@ -257,7 +260,7 @@ class SQLCompiler(sqlserver_ado.compiler.SQLCompiler):
         if with_limits and self.query.low_mark == self.query.high_mark:
             return '', ()
 
-        if sqlserver_ado.compiler.NEEDS_AGGREGATES_FIX:
+        if NEEDS_AGGREGATES_FIX:
             # Django 1.7+ provides SQLCompiler.compile as a hook
             self._fix_aggregates()
 
