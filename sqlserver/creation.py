@@ -54,25 +54,18 @@ class DatabaseCreation(creation.DatabaseCreation):
         This function will not fail if current user doesn't have
         permissions to enable clr, and clr is already enabled
         """
-        enable_clr_sql = '''
--- Enable CLR in this database
-sp_configure 'show advanced options', 1;
-RECONFIGURE;
-sp_configure 'clr enabled', 1;
-RECONFIGURE;
-        '''
         with self._nodb_connection.cursor() as cursor:
             # check whether clr is enabled
             cursor.execute('''
-            SELECT * FROM sys.configurations
+            SELECT value FROM sys.configurations
             WHERE name = 'clr enabled'
             ''')
             res = cursor.fetchone()
 
             if not res or not res[0]:
                 # if not enabled enable clr
-                for s in enable_clr_sql:
-                    cursor.execute(s)
+                cursor.execute("sp_configure 'clr enabled', 1")
+                cursor.execute("RECONFIGURE")
 
     def install_regex_clr(self, database_name):
         install_regex_sql = '''
