@@ -5,23 +5,12 @@ try:
 except ImportError:
     from itertools import izip_longest as zip_longest
 
-import django
 from django.db.utils import DatabaseError
 from django.db.transaction import TransactionManagementError
 from django.db.models.sql import compiler
 import re
 import six
-from itertools import chain, repeat
-
-NEEDS_AGGREGATES_FIX = django.VERSION[:2] < (1, 7)
-
-# query_class returns the base class to use for Django queries.
-# The custom 'SqlServerQuery' class derives from django.db.models.sql.query.Query
-# which is passed in as "QueryClass" by Django itself.
-#
-# SqlServerQuery overrides:
-# ...insert queries to add "SET IDENTITY_INSERT" if needed.
-# ...select queries to emulate LIMIT/OFFSET for sliced queries.
+import sqlserver_ado.compiler
 
 _re_order_limit_offset = re.compile(
     r'(?:ORDER BY\s+(.+?))?\s*(?:LIMIT\s+(\d+))?\s*(?:OFFSET\s+(\d+))?$')
@@ -71,22 +60,13 @@ def _remove_order_limit_offset(sql):
     return _re_order_limit_offset.sub('', sql).split(None, 1)[1]
 
 
-class SQLCompiler(compiler.SQLCompiler):
+class SQLCompiler(sqlserver_ado.compiler.SQLCompiler):
     def resolve_columns(self, row, fields=()):
         # If the results are sliced, the resultset will have an initial
         # "row number" column. Remove this column before the ORM sees it.
         if getattr(self, '_using_row_number', False):
             row = row[1:]
-        values = []
-        index_extra_select = len(self.query.extra_select)
-        for value, field in zip_longest(row[index_extra_select:], fields):
-            # print '\tfield=%s\tvalue=%s' % (repr(field), repr(value))
-            if field:
-                internal_type = field.get_internal_type()
-                if internal_type in self.connection.ops._convert_values_map:
-                    value = self.connection.ops._convert_values_map[internal_type].to_python(value)
-            values.append(value)
-        return row[:index_extra_select] + tuple(values)
+        return super(SQLCompiler, self).resolve_columns(row, fields=fields)
 
     if hasattr(compiler.SQLCompiler, 'compile'):
         def parent_compile(self, node):
@@ -108,26 +88,6 @@ class SQLCompiler(compiler.SQLCompiler):
             if sql_template:
                 node.sql_template = sql_template
         return self.parent_compile(node)
-
-    def _fix_aggregates(self):
-        """
-        MSSQL doesn't match the behavior of the other backends on a few of
-        the aggregate functions; different return type behavior, different
-        function names, etc.
-
-        MSSQL's implementation of AVG maintains datatype without proding. To
-        match behavior of other django backends, it needs to not drop remainders.
-        E.g. AVG([1, 2]) needs to yield 1.5, not 1
-        """
-        for alias, aggregate in self.query.aggregate_select.items():
-            sql_function = getattr(aggregate, 'sql_function', None)
-            if not sql_function or sql_function not in self.connection.ops._sql_function_overrides:
-                continue
-            sql_function, sql_template = self.connection.ops._sql_function_overrides[sql_function]
-            if sql_function:
-                self.query.aggregate_select[alias].sql_function = sql_function
-            if sql_template:
-                self.query.aggregate_select[alias].sql_template = sql_template
 
     def get_from_clause(self):
         """
@@ -297,7 +257,7 @@ class SQLCompiler(compiler.SQLCompiler):
         if with_limits and self.query.low_mark == self.query.high_mark:
             return '', ()
 
-        if NEEDS_AGGREGATES_FIX:
+        if sqlserver_ado.compiler.NEEDS_AGGREGATES_FIX:
             # Django 1.7+ provides SQLCompiler.compile as a hook
             self._fix_aggregates()
 
@@ -484,121 +444,29 @@ class SQLCompiler(compiler.SQLCompiler):
 
         return ', '.join(outer), ', '.join(inner) + from_clause.format(**parens)
 
-    def get_ordering(self):
-        # The ORDER BY clause is invalid in views, inline functions,
-        # derived tables, subqueries, and common table expressions,
-        # unless TOP or FOR XML is also specified.
-        if getattr(self.query, '_mssql_ordering_not_allowed', False):
-            if django.VERSION[1] == 1 and django.VERSION[2] < 6:
-                return (None, [])
-            return (None, [], [])
-        return super(SQLCompiler, self).get_ordering()
 
-
-class SQLInsertCompiler(compiler.SQLInsertCompiler, SQLCompiler):
-    # search for after table/column list
-    _re_values_sub = re.compile(
-        r'(?P<prefix>\)|\])(?P<default>\s*|\s*default\s*)values(?P<suffix>\s*|\s+\()?',
-        re.IGNORECASE
-    )
-    # ... and insert the OUTPUT clause between it and the values list (or DEFAULT VALUES).
-    _values_repl = r'\g<prefix> OUTPUT INSERTED.{col} INTO @sqlserver_ado_return_id\g<default>VALUES\g<suffix>'
-
-    def as_sql(self, *args, **kwargs):
-        # Fix for Django ticket #14019
-        if not hasattr(self, 'return_id'):
-            self.return_id = False
-
-        result = super(SQLInsertCompiler, self).as_sql(*args, **kwargs)
-        if isinstance(result, list):
-            # Django 1.4 wraps return in list
-            return [self._fix_insert(x[0], x[1]) for x in result]
-
-        sql, params = result
-        return self._fix_insert(sql, params)
-
-    def _fix_insert(self, sql, params):
-        """
-        Wrap the passed SQL with IDENTITY_INSERT statements and apply
-        other necessary fixes.
-        """
-        meta = self.query.get_meta()
-
-        if meta.has_auto_field:
-            if hasattr(self.query, 'fields'):
-                # django 1.4 replaced columns with fields
-                fields = self.query.fields
-                auto_field = meta.auto_field
-            else:
-                # < django 1.4
-                fields = self.query.columns
-                auto_field = meta.auto_field.db_column or meta.auto_field.column
-
-            auto_in_fields = auto_field in fields
-
-            quoted_table = self.connection.ops.quote_name(meta.db_table)
-            if not fields or (auto_in_fields and len(fields) == 1 and not params):
-                # convert format when inserting only the primary key without
-                # specifying a value
-                sql = 'INSERT INTO {0} DEFAULT VALUES'.format(
-                    quoted_table
-                )
-                params = []
-            elif auto_in_fields:
-                # wrap with identity insert
-                sql = 'SET IDENTITY_INSERT {table} ON;{sql};SET IDENTITY_INSERT {table} OFF'.format(
-                    table=quoted_table,
-                    sql=sql,
-                )
-
-        # mangle SQL to return ID from insert
-        # http://msdn.microsoft.com/en-us/library/ms177564.aspx
-        if self.return_id and self.connection.features.can_return_id_from_insert:
-            col = self.connection.ops.quote_name(meta.pk.db_column or meta.pk.get_attname())
-
-            # Determine datatype for use with the table variable that will return the inserted ID
-            pk_db_type = _re_data_type_terminator.split(meta.pk.db_type(self.connection))[0]
-
-            # NOCOUNT ON to prevent additional trigger/stored proc related resultsets
-            sql = 'SET NOCOUNT ON;{declare_table_var};{sql};{select_return_id}'.format(
-                sql=sql,
-                declare_table_var="DECLARE @sqlserver_ado_return_id table ({col_name} {pk_type})".format(
-                    col_name=col,
-                    pk_type=pk_db_type,
-                ),
-                select_return_id="SELECT * FROM @sqlserver_ado_return_id",
-            )
-
-            output = self._values_repl.format(col=col)
-            sql = self._re_values_sub.sub(output, sql)
-
-        return sql, params
-
-
-class SQLDeleteCompiler(compiler.SQLDeleteCompiler, SQLCompiler):
+class SQLInsertCompiler(sqlserver_ado.compiler.SQLInsertCompiler, SQLCompiler):
     pass
 
 
-class SQLUpdateCompiler(compiler.SQLUpdateCompiler, SQLCompiler):
-    def as_sql(self):
-        sql, params = super(SQLUpdateCompiler, self).as_sql()
-        if sql:
-            # Need the NOCOUNT OFF so UPDATE returns a count, instead of -1
-            sql = 'SET NOCOUNT OFF; {0}; SET NOCOUNT ON'.format(sql)
-        return sql, params
-
-
-class SQLAggregateCompiler(compiler.SQLAggregateCompiler, SQLCompiler):
-    def as_sql(self, qn=None):
-        self._fix_aggregates()
-        return super(SQLAggregateCompiler, self).as_sql(qn=qn)
-
-
-class SQLDateCompiler(compiler.SQLDateCompiler, SQLCompiler):
+class SQLDeleteCompiler(sqlserver_ado.compiler.SQLDeleteCompiler, SQLCompiler):
     pass
+
+
+class SQLUpdateCompiler(sqlserver_ado.compiler.SQLUpdateCompiler, SQLCompiler):
+    pass
+
+
+class SQLAggregateCompiler(sqlserver_ado.compiler.SQLAggregateCompiler, SQLCompiler):
+    pass
+
+
+class SQLDateCompiler(sqlserver_ado.compiler.SQLDateCompiler, SQLCompiler):
+    pass
+
 
 try:
-    class SQLDateTimeCompiler(compiler.SQLDateTimeCompiler, SQLCompiler):
+    class SQLDateTimeCompiler(sqlserver_ado.compiler.SQLDateTimeCompiler, SQLCompiler):
         pass
 except AttributeError:
     pass

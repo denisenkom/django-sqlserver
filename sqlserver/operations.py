@@ -4,6 +4,8 @@ import sqlserver_ado.operations
 
 
 class DatabaseOperations(sqlserver_ado.operations.DatabaseOperations):
+    compiler_module = "sqlserver.compiler"
+
     def bulk_batch_size(self, fields, objs):
         """
         Returns the maximum allowed batch size for the backend. The fields
