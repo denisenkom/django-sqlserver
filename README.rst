@@ -12,6 +12,18 @@ In addition to django-mssql features this package also supports:
 - multiple NULLs in unique constraints
 - MSSQL 2008 support (2008 support is currently dropped in django-mssql)
 
+Requirements
+------------
+
+- django-mssql, version 1.6.x
+- Python 2.7 or 3.3
+
+SQL Server versions
+-------------------
+
+- 2008
+- 2012
+
 Status
 ------
 
