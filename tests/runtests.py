@@ -8,9 +8,16 @@ import tempfile
 import warnings
 
 import django
+from django.core.exceptions import ImproperlyConfigured
 from django import contrib
 from django.utils._os import upath
 from django.utils import six
+try:
+    from django.utils.module_loading import import_string   # Django >= 1.7
+except ImportError:
+    from django.utils.module_loading import import_by_path as import_string
+
+from unittest import expectedFailure
 
 CONTRIB_MODULE_PATH = 'django.contrib'
 
@@ -113,6 +120,35 @@ ALWAYS_INSTALLED_APPS = [
     'sqlserver_ado.sql_app',
 ]
 
+failing_tests = {
+    # Some tests are known to fail with django-mssql.
+    'aggregation.tests.BaseAggregateTestCase.test_dates_with_aggregation': [(1, 6), (1, 7)],
+    'aggregation_regress.tests.AggregationTests.test_more_more_more': [(1, 6), (1, 7)],
+
+    # this test is invalid in Django 1.6
+    # it expects db driver to return incorrect value for id field, when
+    # mssql returns correct value
+    'introspection.tests.IntrospectionTests.test_get_table_description_types': [(1, 6)],
+
+    # this test is invalid in Django 1.6
+    # it expects db driver to return incorrect value for id field, when
+    # mssql returns correct value
+    'inspectdb.tests.InspectDBTestCase.test_number_field_types': [(1, 6)],
+
+    # MSSQL throws an arithmetic overflow error.
+    'expressions_regress.tests.ExpressionOperatorTests.test_righthand_power': [(1, 7)],
+
+    # The migrations and schema tests also fail massively at this time.
+    'migrations.test_operations.OperationTests.test_alter_field_pk': [(1, 7)],
+
+    # Those tests use case-insensitive comparison which is not supported correctly by MSSQL
+    'get_object_or_404.tests.GetObjectOr404Tests.test_get_object_or_404': [(1, 6), (1, 7)],
+    'queries.tests.ComparisonTests.test_ticket8597': [(1, 6), (1, 7)],
+
+    # This test fails on MSSQL because it can't make DST corrections
+    'datetimes.tests.DateTimesTests.test_21432': [(1, 6), (1, 7)],
+}
+
 def get_test_modules():
     test_dirs = [
         (None, RUNTESTS_DIR),
@@ -137,6 +173,32 @@ def get_test_modules():
 def get_installed():
     from django.db.models.loading import get_apps
     return [app.__name__.rsplit('.', 1)[0] for app in get_apps() if not app.__name__.startswith('django.contrib')]
+
+def mark_tests_as_expected_failure(failing_tests):
+    """
+    Flag tests as expectedFailure. This should only run during the
+    testsuite.
+    """
+    django_version = django.VERSION[:2]
+    for test_name, versions in six.iteritems(failing_tests):
+        if not versions or not isinstance(versions, (list, tuple)):
+            # skip None, empty, or invalid
+            continue
+        if not isinstance(versions[0], (list, tuple)):
+            # Ensure list of versions
+            versions = [versions]
+        if all(map(lambda v: v[:2] != django_version, versions)):
+            continue
+        test_case_name, _, method_name = test_name.rpartition('.')
+        try:
+            test_case = import_string(test_case_name)
+        except ImproperlyConfigured:
+            # Django tests might not be available during
+            # testing of client code
+            continue
+        method = getattr(test_case, method_name)
+        method = expectedFailure(method)
+        setattr(test_case, method_name, method)
 
 def setup(verbosity, test_labels):
     from django.conf import settings
@@ -231,6 +293,8 @@ def setup(verbosity, test_labels):
             if mod:
                 if module_label not in settings.INSTALLED_APPS:
                     settings.INSTALLED_APPS.append(module_label)
+
+    mark_tests_as_expected_failure(failing_tests)
 
     return state
 

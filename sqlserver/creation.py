@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 from sqlserver_ado import creation
 
+
 class DatabaseCreation(creation.DatabaseCreation):
     def sql_create_model(self, model, style, known_models=set()):
         opts = model._meta
@@ -101,3 +102,10 @@ EXTERNAL NAME regex_clr.UserDefinedFunctions.REGEXP_LIKE
         with self._nodb_connection.cursor() as cursor:
             for s in install_regex_sql:
                 cursor.execute(s)
+
+    def create_test_db(self, *args, **kwargs):
+        # replace mssql's create_test_db with standard create_test_db
+        # this removes mark_tests_as_expected_failure, which
+        # prevented tests to work in client code
+        # this code moved to tests/runtests.py
+        super(creation.DatabaseCreation, self).create_test_db(*args, **kwargs)

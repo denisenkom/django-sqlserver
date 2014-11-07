@@ -67,34 +67,6 @@ class _CursorWrapper(object):
 
 class DatabaseFeatures(sqlserver_ado.base.DatabaseFeatures):
     # Dict of test import path and list of versions on which it fails
-    failing_tests = {
-        # Some tests are known to fail with django-mssql.
-        'aggregation.tests.BaseAggregateTestCase.test_dates_with_aggregation': [(1, 6), (1, 7)],
-        'aggregation_regress.tests.AggregationTests.test_more_more_more': [(1, 6), (1, 7)],
-
-        # this test is invalid in Django 1.6
-        # it expects db driver to return incorrect value for id field, when
-        # mssql returns correct value
-        'introspection.tests.IntrospectionTests.test_get_table_description_types': [(1, 6)],
-
-        # this test is invalid in Django 1.6
-        # it expects db driver to return incorrect value for id field, when
-        # mssql returns correct value
-        'inspectdb.tests.InspectDBTestCase.test_number_field_types': [(1, 6)],
-
-        # MSSQL throws an arithmetic overflow error.
-        'expressions_regress.tests.ExpressionOperatorTests.test_righthand_power': [(1, 7)],
-
-        # The migrations and schema tests also fail massively at this time.
-        'migrations.test_operations.OperationTests.test_alter_field_pk': [(1, 7)],
-
-        # Those tests use case-insensitive comparison which is not supported correctly by MSSQL
-        'get_object_or_404.tests.GetObjectOr404Tests.test_get_object_or_404': [(1, 6), (1, 7)],
-        'queries.tests.ComparisonTests.test_ticket8597': [(1, 6), (1, 7)],
-
-        # This test fails on MSSQL because it can't make DST corrections
-        'datetimes.tests.DateTimesTests.test_21432': [(1, 6), (1, 7)],
-    }
 
     has_select_for_update = True
     has_select_for_update_nowait = True
