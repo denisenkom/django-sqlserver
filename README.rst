@@ -34,3 +34,9 @@ License
 -------
 
 MIT
+
+Known Issues
+------------
+
+- Doesn't work with old DATETIME columns.  To use this package you should change all DATETIME columns
+  to DATETIME2(6).
