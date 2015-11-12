@@ -18,8 +18,8 @@ HOST = os.environ.get('COMPUTERNAME', os.environ.get('HOST', 'localhost'))
 if INSTANCE:
     HOST = '\\'.join([HOST, INSTANCE])
 DATABASE = os.environ.get('DATABASE_NAME', 'django_test_backend')
-USER = os.environ.get('SQLUSER', '')
-PASSWORD = os.environ.get('SQLPASSWORD', '')
+USER = os.environ.get('SQLUSER', 'sa')
+PASSWORD = os.environ.get('SQLPASSWORD', 'sa')
 
 DATABASES = {
     'default': {

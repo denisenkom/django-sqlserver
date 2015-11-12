@@ -40,3 +40,29 @@ Known Issues
 
 - Doesn't work with old DATETIME columns.  To use this package you should change all DATETIME columns
   to DATETIME2(6).
+
+Testing
+-------
+
+This project integrates with Django's own test suite.  To run tests you need to install Microsoft SQL Server
+2012 or newer.  In SQL server create user sa with password sa, alternatively you can use different user but in this
+case you should set SQLUSER and SQLPASSWORD environment variables.
+
+If you use SQL server instance name provide it in SQLINSTANCE environment variable.
+
+If your SQL server runs on host different from localhost you need to provide name of the host in HOST environment
+variable.
+
+By default tests are run against Django 1.7, if you want to test against different version specify it in DJANGO_VER
+environment variable.
+
+By default tests are run using default Python, if you want to use different Python version specify it's location
+in PYTHONHOME environment variable.
+
+Now on Windows you can run:
+
+  ci.bat
+
+If you are on UNIX run:
+
+  ci.sh
