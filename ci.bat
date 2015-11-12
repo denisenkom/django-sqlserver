@@ -10,11 +10,14 @@ set PYTHONHOME=
 
 set django_branch=stable/%DJANGO_VER%.x
 
-if not exist env\src\django call git clone https://github.com/denisenkom/django.git -b %django_branch% env/src/django
+if not exist env\src\django call git clone https://github.com/django/django.git env/src/django
 
 pushd env\src\django
 
 call git pull
+if %errorlevel% neq 0 exit /b %errorlevel%
+
+call git checkout %django_branch%
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 popd
