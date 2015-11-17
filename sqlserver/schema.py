@@ -28,6 +28,6 @@ class DatabaseSchemaEditor(sqlserver_ado.schema.DatabaseSchemaEditor):
         if isinstance(value, six.text_type):
             return "'%s'" % six.text_type(value).replace("\'", "\'\'")
         elif isinstance(value, bytes):
-            return "0x" + binascii.hexlify(value)
+            return "0x" + binascii.hexlify(value).decode('ascii')
         else:
             return super(DatabaseSchemaEditor, self).quote_value(value)
