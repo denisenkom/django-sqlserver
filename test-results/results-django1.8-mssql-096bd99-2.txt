@@ -1,0 +1,1144 @@
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>set ROOT=C:\Users\misha\pyprojects\django-sqlserver 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>if not defined DJANGO_VER set DJANGO_VER=1.7 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>if defined PYTHONHOME (set virtualenv=\scripts\virtualenv )  else (set virtualenv=virtualenv ) 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>virtualenv env --system-site-packages 
+Using base prefix 'E:\\apps\\Python34-x86'
+New python executable in env\Scripts\python.exe
+Installing setuptools, pip, wheel...done.
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>if 0 NEQ 0 exit /b 0 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>set PYTHONHOME= 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>set django_branch=stable/1.8.x 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>if not exist env\src\django call git clone https://github.com/django/django.git env/src/django 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>pushd env\src\django 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver\env\src\django>call git pull 
+Already up-to-date.
+
+(env) C:\Users\misha\pyprojects\django-sqlserver\env\src\django>if 0 NEQ 0 exit /b 0 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver\env\src\django>call git checkout stable/1.8.x 
+Your branch is up-to-date with 'origin/stable/1.8.x'.
+Already on 'stable/1.8.x'
+
+(env) C:\Users\misha\pyprojects\django-sqlserver\env\src\django>if 0 NEQ 0 exit /b 0 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver\env\src\django>popd
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>env\scripts\pip install -e env\src\django 
+Obtaining file:///C:/Users/misha/pyprojects/django-sqlserver/env/src/django
+Installing collected packages: Django
+  Running setup.py develop for Django
+Successfully installed Django-1.8.7.dev20151114223929
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>if 0 NEQ 0 exit /b 0 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>if not exist pytds call git clone https://github.com/denisenkom/pytds.git 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>pushd pytds 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver\pytds>call git pull 
+Already up-to-date.
+
+(env) C:\Users\misha\pyprojects\django-sqlserver\pytds>if 0 NEQ 0 exit /b 0 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver\pytds>popd
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>env\scripts\pip install -e .\pytds 
+Obtaining file:///C:/Users/misha/pyprojects/django-sqlserver/pytds
+Requirement already satisfied (use --upgrade to upgrade): six>=1.4.1 in e:\apps\python34-x86\lib\site-packages (from python-tds===1.8.1-1-gc301)
+Installing collected packages: python-tds
+  Running setup.py develop for python-tds
+Successfully installed python-tds-1.8.1-1-gc301
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>if 0 NEQ 0 exit /b 0 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>if not exist env\src\django-mssql call git clone https://bitbucket.org/Manfre/django-mssql.git 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>pushd env\src\django-mssql 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver\env\src\django-mssql>call git pull 
+Already up-to-date.
+
+(env) C:\Users\misha\pyprojects\django-sqlserver\env\src\django-mssql>if 0 NEQ 0 exit /b 0 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver\env\src\django-mssql>popd
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>env\scripts\pip install -e env\src\django-mssql 
+Obtaining file:///C:/Users/misha/pyprojects/django-sqlserver/env/src/django-mssql
+Installing collected packages: django-mssql
+  Running setup.py develop for django-mssql
+Successfully installed django-mssql-1.8a0
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>if 0 NEQ 0 exit /b 0 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>env\scripts\pip install pytz==2013d 
+Requirement already satisfied (use --upgrade to upgrade): pytz==2013d in c:\users\misha\pyprojects\django-sqlserver\env\lib\site-packages
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>if 0 NEQ 0 exit /b 0 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>set COMPUTERNAME= 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>env\scripts\pip install -e . 
+Obtaining file:///C:/Users/misha/pyprojects/django-sqlserver
+Installing collected packages: django-mssql
+  Running setup.py develop for django-mssql
+Successfully installed django-mssql-1.8a0
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>set PYTHONPATH=C:\Users\misha\pyprojects\django-sqlserver\tests 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>echo Running Django test suite... 
+Running Django test suite...
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>env\scripts\python env\src\django\tests\runtests.py --noinput --settings=test_mssql 
+...............................................................................ssssssssssss.ssssssssss.......s............................................................................................................................................................ss.........................................................................sssssssss......................................................................................................................................................................................................................E.......sss........s.......................................................E...............................................................................................................................................................................................................................s..........................................................................................s..s..s.s.sssssssssssss............................s..........ss......................s........................................................................................................................................sssssssssssssssssssssssssssssssssssssssssssss.......................................................................................................................................................................................................................s.s.....ss..................................................................s.......EE..............................................s.............................................s..sss............s....................E.......FF.s.F..E..F.....................................................................s......................................................................s....................................................................................................s..................................................................................................................................................................................................................................................................................................................................................................................................................................................................................s...........s......s........s.........E........................................................................................................................................ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss......................................................................................................................................s..s..............s...ss..sss..............s..................................................s........................................................................................................................................s.........................................................................................................................................................................................................................................s.................................................................................................................................................................................................................x................................................................s................................................................................................................................................sssssssssssssssssssssssssssssssssssssssssssss.............................................................................s...........................................................s...........................................................................................................E...........................E................................................................................x.............................................................ss......................s..............................................................................................E.............................................................................................................................................................s................................x....s.............x..........................................................................................................F......................s..........ssss...............................................................................................................................xx..................................................ssssssssssssssssssssssssssssssss.........................................................................................................................................................................................s.......s........................................................................................................ssssssss.........................................................sss.s.............s.......................................................................................................................................................................................s.......................................................s..........s.s.s..sssssss....s..............s..sssss........s..s....ssss......s.s....s..ss..s.................................................................................................ss.............................................................................................................................s............................................................ssssss........................ssssssssssssssssss.....sss...................s.......................s...................................................................................................................................................................................................ss...............................................................................................s.sssssssssssssssssssss...sssssssssssssssssssssssssssssssssssssssssssssssssssss.......s.....s...s..............................................................................................................................................................E................ssE.......EF........................................s...s..............................................................................................EE....E.....E..sE...F....................EEEEEE.......................s..s...............................s...s...ssssssssss................................................................................................................................................................................................................................................................................................ss................ss........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................ss.........................................................................................................................................................................................................s.........s........ss....s..........................s..s..................................................................................................E.............................................................................................................................................................................................................................................................................................sss...................................................................................................................................................................................................ssssss.......................................ss..............ss....E......................ssss............................................sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss........................sssss...................sssssssssss..............................................................................................x........................s................................................................ss...........................................................................................................................................................................................................................s...............................................................
+======================================================================
+ERROR: test_expression_on_aggregation (aggregation.tests.ComplexAggregateTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+pytds.tds.OperationalError: 'GREATEST' is not a recognized built-in function name.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\aggregation\tests.py", line 949, in test_expression_on_aggregation
+    qs, [1, 2, 3, 4], lambda v: v.pk)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\test\testcases.py", line 883, in assertQuerysetEqual
+    items = six.moves.map(transform, qs)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 162, in __iter__
+    self._fetch_all()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 965, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 238, in iterator
+    results = compiler.execute_sql()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 840, in execute_sql
+    cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\utils.py", line 98, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\utils\six.py", line 685, in reraise
+    raise value.with_traceback(tb)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+django.db.utils.OperationalError: 'GREATEST' is not a recognized built-in function name.
+
+======================================================================
+ERROR: test_mixed_type_annotation_date_interval (annotations.tests.NonAggregateAnnotationTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+pytds.tds.OperationalError: Incorrect syntax near '1000000'. Invalid usage of the option NEXT in the FETCH statement.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\annotations\tests.py", line 58, in test_mixed_type_annotation_date_interval
+    ).first()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 490, in first
+    objects = list((self if self.ordered else self.order_by('pk'))[:1])
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 162, in __iter__
+    self._fetch_all()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 965, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 238, in iterator
+    results = compiler.execute_sql()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 840, in execute_sql
+    cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\utils.py", line 98, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\utils\six.py", line 685, in reraise
+    raise value.with_traceback(tb)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+django.db.utils.OperationalError: Incorrect syntax near '1000000'. Invalid usage of the option NEXT in the FETCH statement.
+
+======================================================================
+ERROR: test_substr (db_functions.tests.FunctionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\db_functions\tests.py", line 269, in test_substr
+    lambda a: a.name_part
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\test\testcases.py", line 883, in assertQuerysetEqual
+    items = six.moves.map(transform, qs)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 162, in __iter__
+    self._fetch_all()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 965, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 238, in iterator
+    results = compiler.execute_sql()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 829, in execute_sql
+    sql, params = self.as_sql()
+  File "c:\users\misha\pyprojects\django-sqlserver\sqlserver\compiler.py", line 27, in as_sql
+    subquery=subquery,
+  File "c:\users\misha\pyprojects\django-sqlserver\sqlserver\compiler.py", line 62, in _as_sql
+    extra_select, order_by, group_by = self.pre_sql_setup()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 48, in pre_sql_setup
+    self.setup_query()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 39, in setup_query
+    self.select, self.klass_info, self.annotation_col_map = self.get_select()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 219, in get_select
+    ret.append((col, self.compile(col, select_format=True), alias))
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 355, in compile
+    sql, params = vendor_impl(self, self.connection)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django-mssql\sqlserver_ado\expressions.py", line 77, in ensure_three_substring_arguments
+    self.source_expressions.append(Value(sys.maxint))
+AttributeError: 'module' object has no attribute 'maxint'
+
+======================================================================
+ERROR: test_substr_start (db_functions.tests.FunctionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\db_functions\tests.py", line 290, in test_substr_start
+    ).get(alias='smithj')
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 328, in get
+    num = len(clone)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 144, in __len__
+    self._fetch_all()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 965, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 238, in iterator
+    results = compiler.execute_sql()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 829, in execute_sql
+    sql, params = self.as_sql()
+  File "c:\users\misha\pyprojects\django-sqlserver\sqlserver\compiler.py", line 27, in as_sql
+    subquery=subquery,
+  File "c:\users\misha\pyprojects\django-sqlserver\sqlserver\compiler.py", line 62, in _as_sql
+    extra_select, order_by, group_by = self.pre_sql_setup()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 48, in pre_sql_setup
+    self.setup_query()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 39, in setup_query
+    self.select, self.klass_info, self.annotation_col_map = self.get_select()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 219, in get_select
+    ret.append((col, self.compile(col, select_format=True), alias))
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 355, in compile
+    sql, params = vendor_impl(self, self.connection)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django-mssql\sqlserver_ado\expressions.py", line 77, in ensure_three_substring_arguments
+    self.source_expressions.append(Value(sys.maxint))
+AttributeError: 'module' object has no attribute 'maxint'
+
+======================================================================
+ERROR: test_righthand_power (expressions.tests.ExpressionOperatorTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+pytds.tds.OperationalError: Arithmetic overflow error for type int, value = 4398046511104.000000.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\expressions\tests.py", line 624, in test_righthand_power
+    float=1.5 ** F('float'))
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 563, in update
+    rows = query.get_compiler(self.db).execute_sql(CURSOR)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 1062, in execute_sql
+    cursor = super(SQLUpdateCompiler, self).execute_sql(result_type)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 840, in execute_sql
+    cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\utils.py", line 98, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\utils\six.py", line 685, in reraise
+    raise value.with_traceback(tb)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+django.db.utils.OperationalError: Arithmetic overflow error for type int, value = 4398046511104.000000.
+
+======================================================================
+ERROR: test_durationfield_add (expressions.tests.FTimeDeltaTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+pytds.tds.ProgrammingError: Incorrect syntax near '1000000'.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\expressions\tests.py", line 815, in test_durationfield_add
+    Experiment.objects.filter(start=F('start') + F('estimated_time'))]
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 162, in __iter__
+    self._fetch_all()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 965, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 238, in iterator
+    results = compiler.execute_sql()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 840, in execute_sql
+    cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\utils.py", line 98, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\utils\six.py", line 685, in reraise
+    raise value.with_traceback(tb)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+django.db.utils.ProgrammingError: Incorrect syntax near '1000000'.
+
+======================================================================
+ERROR: test_aware_datetime_month_view (generic_views.test_dates.MonthArchiveViewTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\test\testcases.py", line 1018, in skip_wrapper
+    return test_func(*args, **kwargs)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\test\utils.py", line 196, in inner
+    return test_func(*args, **kwargs)
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\generic_views\test_dates.py", line 362, in test_aware_datetime_month_view
+    res = self.client.get('/dates/booksignings/2008/apr/')
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\test\client.py", line 500, in get
+    **extra)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\test\client.py", line 303, in get
+    return self.generic('GET', path, secure=secure, **r)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\test\client.py", line 379, in generic
+    return self.request(**r)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\test\client.py", line 466, in request
+    six.reraise(*exc_info)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\utils\six.py", line 686, in reraise
+    raise value
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\views\generic\dates.py", line 339, in get
+    self.date_list, self.object_list, extra_context = self.get_dated_items()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\views\generic\dates.py", line 521, in get_dated_items
+    'next_month': self.get_next_month(date),
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\views\generic\dates.py", line 111, in get_next_month
+    return _get_next_prev(self, date, is_previous=False, period='month')
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\views\generic\dates.py", line 784, in _get_next_prev
+    result = timezone.localtime(result)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\utils\timezone.py", line 309, in localtime
+    value = value.astimezone(timezone)
+ValueError: astimezone() cannot be applied to a naive datetime
+
+======================================================================
+ERROR: test_unique_null (model_forms.tests.UniqueTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+pytds.tds.IntegrityError: Violation of UNIQUE KEY constraint 'UQ__model_fo__D32596076E932109'. Cannot insert duplicate key in object 'dbo.model_forms_book'. The duplicate key value is (<NULL>).
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\test\testcases.py", line 1018, in skip_wrapper
+    return test_func(*args, **kwargs)
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\model_forms\tests.py", line 700, in test_unique_null
+    form.save()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\forms\models.py", line 459, in save
+    construct=False)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\forms\models.py", line 105, in save_instance
+    instance.save()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\base.py", line 734, in save
+    force_update=force_update, update_fields=update_fields)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\base.py", line 762, in save_base
+    updated = self._save_table(raw, cls, force_insert, force_update, using, update_fields)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\base.py", line 846, in _save_table
+    result = self._do_insert(cls._base_manager, using, fields, update_pk, raw)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\base.py", line 885, in _do_insert
+    using=using, raw=raw)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 920, in _insert
+    return query.get_compiler(using=using).execute_sql(return_id)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 974, in execute_sql
+    cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\utils.py", line 98, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\utils\six.py", line 685, in reraise
+    raise value.with_traceback(tb)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+django.db.utils.IntegrityError: Violation of UNIQUE KEY constraint 'UQ__model_fo__D32596076E932109'. Cannot insert duplicate key in object 'dbo.model_forms_book'. The duplicate key value is (<NULL>).
+
+======================================================================
+ERROR: test_inline_formsets_with_nullable_unique_together (model_formsets.tests.ModelFormsetTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+pytds.tds.IntegrityError: Violation of UNIQUE KEY constraint 'UQ__model_fo__930839F8C215C905'. Cannot insert duplicate key in object 'dbo.model_formsets_bookwithoptionalalteditor'. The duplicate key value is (1, Les Fleurs du Mal, <NULL>).
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\test\testcases.py", line 1018, in skip_wrapper
+    return test_func(*args, **kwargs)
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\model_formsets\tests.py", line 724, in test_inline_formsets_with_nullable_unique_together
+    saved = formset.save()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\forms\models.py", line 636, in save
+    return self.save_existing_objects(commit) + self.save_new_objects(commit)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\forms\models.py", line 767, in save_new_objects
+    self.new_objects.append(self.save_new(form, commit=commit))
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\forms\models.py", line 900, in save_new
+    obj.save()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\base.py", line 734, in save
+    force_update=force_update, update_fields=update_fields)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\base.py", line 762, in save_base
+    updated = self._save_table(raw, cls, force_insert, force_update, using, update_fields)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\base.py", line 846, in _save_table
+    result = self._do_insert(cls._base_manager, using, fields, update_pk, raw)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\base.py", line 885, in _do_insert
+    using=using, raw=raw)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 920, in _insert
+    return query.get_compiler(using=using).execute_sql(return_id)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 974, in execute_sql
+    cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\utils.py", line 98, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\utils\six.py", line 685, in reraise
+    raise value.with_traceback(tb)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+django.db.utils.IntegrityError: Violation of UNIQUE KEY constraint 'UQ__model_fo__930839F8C215C905'. Cannot insert duplicate key in object 'dbo.model_formsets_bookwithoptionalalteditor'. The duplicate key value is (1, Les Fleurs du Mal, <NULL>).
+
+======================================================================
+ERROR: test_get_reverse_on_unsaved_object (one_to_one.tests.OneToOneTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+pytds.tds.IntegrityError: Violation of UNIQUE KEY constraint 'UQ__one_to_o__BF2B684B4E8F8841'. Cannot insert duplicate key in object 'dbo.one_to_one_undergroundbar'. The duplicate key value is (<NULL>).
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\one_to_one\tests.py", line 360, in test_get_reverse_on_unsaved_object
+    UndergroundBar.objects.create()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 348, in create
+    obj.save(force_insert=True, using=self.db)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\base.py", line 734, in save
+    force_update=force_update, update_fields=update_fields)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\base.py", line 762, in save_base
+    updated = self._save_table(raw, cls, force_insert, force_update, using, update_fields)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\base.py", line 846, in _save_table
+    result = self._do_insert(cls._base_manager, using, fields, update_pk, raw)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\base.py", line 885, in _do_insert
+    using=using, raw=raw)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 920, in _insert
+    return query.get_compiler(using=using).execute_sql(return_id)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 974, in execute_sql
+    cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\utils.py", line 98, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\utils\six.py", line 685, in reraise
+    raise value.with_traceback(tb)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+django.db.utils.IntegrityError: Violation of UNIQUE KEY constraint 'UQ__one_to_o__BF2B684B4E8F8841'. Cannot insert duplicate key in object 'dbo.one_to_one_undergroundbar'. The duplicate key value is (<NULL>).
+
+======================================================================
+ERROR: test_alter_id_type_with_fk (migrations.test_executor.ExecutorTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+pytds.tds.OperationalError: The object 'PK__author_a__3213E83F1029342F' is dependent on column 'id'. ALTER TABLE ALTER COLUMN id failed because one or more objects access this column.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\test\utils.py", line 196, in inner
+    return test_func(*args, **kwargs)
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\migrations\test_executor.py", line 402, in test_alter_id_type_with_fk
+    executor.migrate([("author_app", "0002_alter_id")])
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\migrations\executor.py", line 110, in migrate
+    self.apply_migration(states[migration], migration, fake=fake, fake_initial=fake_initial)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\migrations\executor.py", line 148, in apply_migration
+    state = migration.apply(state, schema_editor)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\migrations\migration.py", line 115, in apply
+    operation.database_forwards(self.app_label, schema_editor, old_state, project_state)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\migrations\operations\fields.py", line 201, in database_forwards
+    schema_editor.alter_field(from_model, from_field, to_field)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\base\schema.py", line 484, in alter_field
+    old_db_params, new_db_params, strict)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django-mssql\sqlserver_ado\schema.py", line 310, in _alter_field
+    params,
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\base\schema.py", line 111, in execute
+    cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\utils.py", line 98, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\utils\six.py", line 685, in reraise
+    raise value.with_traceback(tb)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+django.db.utils.OperationalError: The object 'PK__author_a__3213E83F1029342F' is dependent on column 'id'. ALTER TABLE ALTER COLUMN id failed because one or more objects access this column.
+
+======================================================================
+ERROR: test_add_binaryfield (migrations.test_operations.OperationTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\migrations\test_operations.py", line 788, in test_add_binaryfield
+    models.BinaryField(default=b'"\'"'),
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\migrations\test_operations.py", line 32, in apply_operations
+    return migration.apply(project_state, editor)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\migrations\migration.py", line 115, in apply
+    operation.database_forwards(self.app_label, schema_editor, old_state, project_state)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\migrations\operations\fields.py", line 62, in database_forwards
+    field,
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django-mssql\sqlserver_ado\schema.py", line 429, in add_field
+    definition, params = self.column_sql(model, field, include_default=True)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\base\schema.py", line 152, in column_sql
+    sql += " DEFAULT %s" % self.prepare_default(default_value)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django-mssql\sqlserver_ado\schema.py", line 489, in prepare_default
+    return self.quote_value(value)
+  File "c:\users\misha\pyprojects\django-sqlserver\sqlserver\schema.py", line 31, in quote_value
+    return "0x" + binascii.hexlify(value)
+TypeError: Can't convert 'bytes' object to str implicitly
+
+======================================================================
+ERROR: test_alter_field_pk (migrations.test_operations.OperationTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\migrations\test_operations.py", line 1113, in test_alter_field_pk
+    operation.database_backwards("test_alflpk", editor, new_state, project_state)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\migrations\operations\fields.py", line 206, in database_backwards
+    self.database_forwards(app_label, schema_editor, from_state, to_state)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\migrations\operations\fields.py", line 201, in database_forwards
+    schema_editor.alter_field(from_model, from_field, to_field)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\base\schema.py", line 484, in alter_field
+    old_db_params, new_db_params, strict)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django-mssql\sqlserver_ado\schema.py", line 159, in _alter_field
+    raise NotSupportedError('Cannot alter a non-AutoField to an AutoField')
+django.db.utils.NotSupportedError: Cannot alter a non-AutoField to an AutoField
+
+======================================================================
+ERROR: test_add_field_binary (schema.tests.SchemaTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\schema\tests.py", line 373, in test_add_field_binary
+    editor.add_field(Author, new_field)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django-mssql\sqlserver_ado\schema.py", line 429, in add_field
+    definition, params = self.column_sql(model, field, include_default=True)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\base\schema.py", line 152, in column_sql
+    sql += " DEFAULT %s" % self.prepare_default(default_value)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django-mssql\sqlserver_ado\schema.py", line 489, in prepare_default
+    return self.quote_value(value)
+  File "c:\users\misha\pyprojects\django-sqlserver\sqlserver\schema.py", line 31, in quote_value
+    return "0x" + binascii.hexlify(value)
+TypeError: Can't convert 'bytes' object to str implicitly
+
+======================================================================
+ERROR: test_add_field_default_transform (schema.tests.SchemaTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+pytds.tds.ProgrammingError: Incorrect syntax near '1'.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\schema\tests.py", line 354, in test_add_field_default_transform
+    editor.add_field(Author, new_field)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django-mssql\sqlserver_ado\schema.py", line 443, in add_field
+    self.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\base\schema.py", line 111, in execute
+    cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\utils.py", line 98, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\utils\six.py", line 685, in reraise
+    raise value.with_traceback(tb)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+django.db.utils.ProgrammingError: Incorrect syntax near '1'.
+
+======================================================================
+ERROR: test_add_textfield_unhashable_default (schema.tests.SchemaTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+pytds.tds.ProgrammingError: Incorrect syntax near '}'.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\schema\tests.py", line 1543, in test_add_textfield_unhashable_default
+    editor.add_field(Author, new_field)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django-mssql\sqlserver_ado\schema.py", line 443, in add_field
+    self.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\base\schema.py", line 111, in execute
+    cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\utils.py", line 98, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\utils\six.py", line 685, in reraise
+    raise value.with_traceback(tb)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+django.db.utils.ProgrammingError: Incorrect syntax near '}'.
+
+======================================================================
+ERROR: test_alter_int_pk_to_autofield_pk (schema.tests.SchemaTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\schema\tests.py", line 740, in test_alter_int_pk_to_autofield_pk
+    editor.alter_field(IntegerPK, old_field, new_field, strict=True)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\base\schema.py", line 484, in alter_field
+    old_db_params, new_db_params, strict)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django-mssql\sqlserver_ado\schema.py", line 159, in _alter_field
+    raise NotSupportedError('Cannot alter a non-AutoField to an AutoField')
+django.db.utils.NotSupportedError: Cannot alter a non-AutoField to an AutoField
+
+======================================================================
+ERROR: test_alter_numeric_field_keep_null_status (schema.tests.SchemaTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+pytds.tds.OperationalError: The object 'UQ__schema_u__43B7F26F7A6F3D68' is dependent on column 'year'. ALTER TABLE ALTER COLUMN year failed because one or more objects access this column.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\schema\tests.py", line 452, in test_alter_numeric_field_keep_null_status
+    editor.alter_field(UniqueTest, old_field, new_field, strict=True)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\base\schema.py", line 484, in alter_field
+    old_db_params, new_db_params, strict)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django-mssql\sqlserver_ado\schema.py", line 310, in _alter_field
+    params,
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\base\schema.py", line 111, in execute
+    cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\utils.py", line 98, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\utils\six.py", line 685, in reraise
+    raise value.with_traceback(tb)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+django.db.utils.OperationalError: The object 'UQ__schema_u__43B7F26F7A6F3D68' is dependent on column 'year'. ALTER TABLE ALTER COLUMN year failed because one or more objects access this column.
+
+======================================================================
+ERROR: test_m2m_custom (schema.tests.SchemaTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 62, in execute
+    return self.cursor.execute(sql)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+pytds.tds.ProgrammingError: Invalid object name 'schema_localauthorwithm2m_tags'.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\schema\tests.py", line 945, in test_m2m_custom
+    self._test_m2m(CustomManyToManyField)
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\schema\tests.py", line 921, in _test_m2m
+    columns = self.column_classes(new_field.rel.through)
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\schema\tests.py", line 87, in column_classes
+    model._meta.db_table,
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django-mssql\sqlserver_ado\introspection.py", line 101, in get_table_description
+    cursor.execute("SELECT * FROM [%s] where 1=0" % (table_name))
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\utils.py", line 98, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\utils\six.py", line 685, in reraise
+    raise value.with_traceback(tb)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 62, in execute
+    return self.cursor.execute(sql)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+django.db.utils.ProgrammingError: Invalid object name 'schema_localauthorwithm2m_tags'.
+
+======================================================================
+ERROR: test_m2m_custom (schema.tests.SchemaTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+pytds.tds.OperationalError: Cannot drop the table 'schema_localauthorwithm2m_tags', because it does not exist or you do not have permission.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\schema\tests.py", line 55, in tearDown
+    self.delete_tables()
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\schema\tests.py", line 77, in delete_tables
+    editor.delete_model(model)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django-mssql\sqlserver_ado\schema.py", line 106, in delete_model
+    super(DatabaseSchemaEditor, self).delete_model(model)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\base\schema.py", line 303, in delete_model
+    self.delete_model(field.rel.through)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django-mssql\sqlserver_ado\schema.py", line 106, in delete_model
+    super(DatabaseSchemaEditor, self).delete_model(model)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\base\schema.py", line 307, in delete_model
+    "table": self.quote_name(model._meta.db_table),
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\base\schema.py", line 111, in execute
+    cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\utils.py", line 98, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\utils\six.py", line 685, in reraise
+    raise value.with_traceback(tb)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 634, in execute
+    self._execute(operation, params)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\__init__.py", line 623, in _execute
+    self._session.find_result_or_done()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 3807, in find_result_or_done
+    self.process_end(marker)
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2909, in process_end
+    self.raise_db_exception()
+  File "c:\users\misha\pyprojects\django-sqlserver\pytds\pytds\tds.py", line 2654, in raise_db_exception
+    raise ex
+django.db.utils.OperationalError: Cannot drop the table 'schema_localauthorwithm2m_tags', because it does not exist or you do not have permission.
+
+======================================================================
+ERROR: test_m2m_db_constraint (schema.tests.SchemaTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\schema\tests.py", line 248, in test_m2m_db_constraint
+    self._test_m2m_db_constraint(ManyToManyField)
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\schema\tests.py", line 218, in _test_m2m_db_constraint
+    class LocalAuthorWithM2M(Model):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\base.py", line 309, in __new__
+    new_class._meta.apps.register_model(new_class._meta.app_label, new_class)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\apps\registry.py", line 217, in register_model
+    RuntimeWarning, stacklevel=2)
+RuntimeWarning: Model 'schema.localauthorwithm2m' was already registered. Reloading models is not advised as it can lead to inconsistencies, most notably with related models.
+
+======================================================================
+ERROR: test_m2m_db_constraint_custom (schema.tests.SchemaTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\schema\tests.py", line 252, in test_m2m_db_constraint_custom
+    self._test_m2m_db_constraint(CustomManyToManyField)
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\schema\tests.py", line 218, in _test_m2m_db_constraint
+    class LocalAuthorWithM2M(Model):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\base.py", line 309, in __new__
+    new_class._meta.apps.register_model(new_class._meta.app_label, new_class)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\apps\registry.py", line 217, in register_model
+    RuntimeWarning, stacklevel=2)
+RuntimeWarning: Model 'schema.localauthorwithm2m' was already registered. Reloading models is not advised as it can lead to inconsistencies, most notably with related models.
+
+======================================================================
+ERROR: test_m2m_db_constraint_inherited (schema.tests.SchemaTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\schema\tests.py", line 256, in test_m2m_db_constraint_inherited
+    self._test_m2m_db_constraint(InheritedManyToManyField)
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\schema\tests.py", line 218, in _test_m2m_db_constraint
+    class LocalAuthorWithM2M(Model):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\base.py", line 309, in __new__
+    new_class._meta.apps.register_model(new_class._meta.app_label, new_class)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\apps\registry.py", line 217, in register_model
+    RuntimeWarning, stacklevel=2)
+RuntimeWarning: Model 'schema.localauthorwithm2m' was already registered. Reloading models is not advised as it can lead to inconsistencies, most notably with related models.
+
+======================================================================
+ERROR: test_m2m_inherited (schema.tests.SchemaTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\schema\tests.py", line 948, in test_m2m_inherited
+    self._test_m2m(InheritedManyToManyField)
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\schema\tests.py", line 899, in _test_m2m
+    class LocalAuthorWithM2M(Model):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\base.py", line 309, in __new__
+    new_class._meta.apps.register_model(new_class._meta.app_label, new_class)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\apps\registry.py", line 217, in register_model
+    RuntimeWarning, stacklevel=2)
+RuntimeWarning: Model 'schema.localauthorwithm2m' was already registered. Reloading models is not advised as it can lead to inconsistencies, most notably with related models.
+
+======================================================================
+ERROR: test_strip_tags (utils_tests.test_html.TestUtilsHtml)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\utils_tests\test_html.py", line 103, in test_strip_tags
+    content = force_text(fp.read())
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\lib\encodings\cp1251.py", line 23, in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+UnicodeDecodeError: 'charmap' codec can't decode byte 0x98 in position 33114: character maps to <undefined>
+
+======================================================================
+ERROR: test_content_saving (file_storage.tests.ContentFileStorageTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\file_storage\tests.py", line 769, in test_content_saving
+    self.storage.save('unicode.txt', ContentFile("espa\xf1ol"))
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\core\files\storage.py", line 63, in save
+    name = self._save(name, content)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\core\files\storage.py", line 256, in _save
+    _file.write(chunk)
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\lib\encodings\cp1251.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\xf1' in position 4: character maps to <undefined>
+
+======================================================================
+FAIL: test_insensitive_patterns_escape (expressions.tests.ExpressionsTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\expressions\tests.py", line 425, in test_insensitive_patterns_escape
+    ordered=False)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\test\testcases.py", line 885, in assertQuerysetEqual
+    return self.assertEqual(Counter(items), Counter(values), msg=msg)
+AssertionError: Count[41 chars]yee: Jean-Claude claude%>': 1, '<Employee: %Jo[84 chars]: 1}) != Count[41 chars]yee: %Joh\\nny %joh\\n>': 1, '<Employee: Jean-[15 chars]: 1})
+
+======================================================================
+FAIL: test_patterns_escape (expressions.tests.ExpressionsTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\expressions\tests.py", line 393, in test_patterns_escape
+    ordered=False)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\test\testcases.py", line 885, in assertQuerysetEqual
+    return self.assertEqual(Counter(items), Counter(values), msg=msg)
+AssertionError: Count[29 chars]laude%>': 1, '<Employee: Johnny %John>': 1, '<[96 chars]: 1}) != Count[29 chars]laude>': 1, '<Employee: %Joh\\nny %Joh\\n>': 1[27 chars]: 1})
+
+======================================================================
+FAIL: test_delta_subtract (expressions.tests.FTimeDeltaTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\expressions\tests.py", line 737, in test_delta_subtract
+    self.assertEqual(test_set, self.expnames[:i])
+AssertionError: Lists differ: [] != ['e0']
+
+Second list contains 1 additional elements.
+First extra element 0:
+e0
+
+- []
++ ['e0']
+
+======================================================================
+FAIL: test_mixed_comparisons1 (expressions.tests.FTimeDeltaTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\test\testcases.py", line 1018, in skip_wrapper
+    return test_func(*args, **kwargs)
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\expressions\tests.py", line 777, in test_mixed_comparisons1
+    self.assertEqual(test_set, self.expnames[:i + 1])
+AssertionError: Lists differ: [] != ['e0']
+
+Second list contains 1 additional elements.
+First extra element 0:
+e0
+
+- []
++ ['e0']
+
+======================================================================
+FAIL: test_extra_select_literal_percent_s (queries.tests.Queries5Tests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\queries\tests.py", line 1710, in test_extra_select_literal_percent_s
+    '%s'
+AssertionError: '%%s' != '%s'
+- %%s
+? -
++ %s
+
+
+======================================================================
+FAIL: test_alter_field_pk_fk (migrations.test_operations.OperationTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\migrations\test_operations.py", line 1143, in test_alter_field_pk_fk
+    assertIdTypeEqualsFkType()
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\migrations\test_operations.py", line 1140, in assertIdTypeEqualsFkType
+    self.assertEqual(id_type, fk_type)
+AssertionError: -1000 != 3
+
+======================================================================
+FAIL: test_alter_textual_field_keep_null_status (schema.tests.SchemaTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\test\testcases.py", line 1018, in skip_wrapper
+    return test_func(*args, **kwargs)
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\src\django\tests\schema\tests.py", line 438, in test_alter_textual_field_keep_null_status
+    Note.objects.create(info=None)
+AssertionError: IntegrityError not raised
+
+----------------------------------------------------------------------
+Ran 9357 tests in 7695.491s
+
+FAILED (failures=7, errors=26, skipped=714, expected failures=7)
+Testing against Django installed in 'c:\users\misha\pyprojects\django-sqlserver\env\src\django\django'
+Creating test database for alias 'default'...
+Creating test database for alias 'other'...
+Destroying test database for alias 'default'...
+Destroying test database for alias 'other'...

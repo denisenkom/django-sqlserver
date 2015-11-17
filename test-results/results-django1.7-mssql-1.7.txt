@@ -1,0 +1,310 @@
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>if not defined DJANGO_VER set DJANGO_VER=1.7 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>if defined PYTHONHOME (set virtualenv=\scripts\virtualenv )  else (set virtualenv=virtualenv ) 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>virtualenv env --system-site-packages 
+Using base prefix 'E:\\apps\\Python34-x86'
+New python executable in env\Scripts\python.exe
+Installing setuptools, pip, wheel...done.
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>if 0 NEQ 0 exit /b 0 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>set PYTHONHOME= 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>set django_branch=stable/1.7.x 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>if not exist env\src\django call git clone https://github.com/django/django.git env/src/django 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>pushd env\src\django 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver\env\src\django>call git pull 
+Already up-to-date.
+
+(env) C:\Users\misha\pyprojects\django-sqlserver\env\src\django>if 0 NEQ 0 exit /b 0 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver\env\src\django>call git checkout stable/1.7.x 
+Your branch is up-to-date with 'origin/stable/1.7.x'.
+Already on 'stable/1.7.x'
+
+(env) C:\Users\misha\pyprojects\django-sqlserver\env\src\django>if 0 NEQ 0 exit /b 0 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver\env\src\django>popd
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>env\scripts\pip install -e env\src\django 
+Obtaining file:///C:/Users/misha/pyprojects/django-sqlserver/env/src/django
+Installing collected packages: Django
+  Running setup.py develop for Django
+Successfully installed Django-1.7.11.dev20151111174253
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>if 0 NEQ 0 exit /b 0 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>if not exist pytds call git clone https://github.com/denisenkom/pytds.git 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>pushd pytds 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver\pytds>call git pull 
+Already up-to-date.
+
+(env) C:\Users\misha\pyprojects\django-sqlserver\pytds>if 0 NEQ 0 exit /b 0 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver\pytds>popd
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>env\scripts\pip install -e .\pytds 
+Obtaining file:///C:/Users/misha/pyprojects/django-sqlserver/pytds
+Requirement already satisfied (use --upgrade to upgrade): six>=1.4.1 in e:\apps\python34-x86\lib\site-packages (from python-tds===1.8.1-1-gc301)
+Installing collected packages: python-tds
+  Running setup.py develop for python-tds
+Successfully installed python-tds-1.8.1-1-gc301
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>if 0 NEQ 0 exit /b 0 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>env\scripts\pip install pytz==2013d 
+Requirement already satisfied (use --upgrade to upgrade): pytz==2013d in c:\users\misha\pyprojects\django-sqlserver\env\lib\site-packages
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>if 0 NEQ 0 exit /b 0 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>set COMPUTERNAME= 
+
+(env) C:\Users\misha\pyprojects\django-sqlserver>env\scripts\python tests\runtests.py --noinput --settings=test_mssql 
+...........x................sss.......s.................x...................s...........................s..s..s....ss.sssssssssss..........s...........s.E..................s..........................................................................................................................................ssssssssssssssssssssssssssssssssssssssssssss..............................................................................u......E..........s..........................................s.....s.................x..................................................................u.....................s..................s..................................s.............E...........x............................s........................E.E.............................................................u.s................................x...Es.............x.........................................................................................................................ssss.............................................EE...................................xx......................s.s.s..sssssss....s..............s..sssss.EE.....s..s....ssss......s.s....s..ss..s.....................s......................................................................................................s..........ss................................................s...........................................s.......s................ssss........ssssss....................
+======================================================================
+ERROR: test_object_creation (basic.tests.ModelTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\tests\basic\tests.py", line 379, in test_object_creation
+    ["<Article: Second article>", "<Article: Third article>"])
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\test\testcases.py", line 850, in assertQuerysetEqual
+    items = six.moves.map(transform, qs)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 141, in __iter__
+    self._fetch_all()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 966, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 265, in iterator
+    for row in compiler.results_iter():
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 701, in results_iter
+    for rows in self.execute_sql(MULTI):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 776, in execute_sql
+    sql, params = self.as_sql()
+  File "C:\Users\misha\pyprojects\django-sqlserver\sqlserver\compiler.py", line 255, in as_sql
+    outer_fields, inner_select = self._alias_columns(inner_select)
+AttributeError: 'SQLCompiler' object has no attribute '_alias_columns'
+
+======================================================================
+ERROR: test_basic (defer_regress.tests.DeferRegressionTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\tests\defer_regress\tests.py", line 43, in test_basic
+    self.assertEqual(items[1].name, "no I'm first")
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 177, in __getitem__
+    return list(qs)[0]
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 141, in __iter__
+    self._fetch_all()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 966, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 265, in iterator
+    for row in compiler.results_iter():
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 701, in results_iter
+    for rows in self.execute_sql(MULTI):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 776, in execute_sql
+    sql, params = self.as_sql()
+  File "C:\Users\misha\pyprojects\django-sqlserver\sqlserver\compiler.py", line 255, in as_sql
+    outer_fields, inner_select = self._alias_columns(inner_select)
+AttributeError: 'SQLCompiler' object has no attribute '_alias_columns'
+
+======================================================================
+ERROR: test_select_related_defer (model_inheritance.tests.ModelInheritanceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\tests\model_inheritance\tests.py", line 292, in test_select_related_defer
+    self.assertEqual(qs[1].italianrestaurant.name, 'Ristorante Miron')
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 177, in __getitem__
+    return list(qs)[0]
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 141, in __iter__
+    self._fetch_all()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 966, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 265, in iterator
+    for row in compiler.results_iter():
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 701, in results_iter
+    for rows in self.execute_sql(MULTI):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 776, in execute_sql
+    sql, params = self.as_sql()
+  File "C:\Users\misha\pyprojects\django-sqlserver\sqlserver\compiler.py", line 255, in as_sql
+    outer_fields, inner_select = self._alias_columns(inner_select)
+AttributeError: 'SQLCompiler' object has no attribute '_alias_columns'
+
+======================================================================
+ERROR: test_stop_start_slicing (ordering.tests.OrderingTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\tests\ordering\tests.py", line 114, in test_stop_start_slicing
+    attrgetter("headline")
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\test\testcases.py", line 850, in assertQuerysetEqual
+    items = six.moves.map(transform, qs)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 141, in __iter__
+    self._fetch_all()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 966, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 265, in iterator
+    for row in compiler.results_iter():
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 701, in results_iter
+    for rows in self.execute_sql(MULTI):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 776, in execute_sql
+    sql, params = self.as_sql()
+  File "C:\Users\misha\pyprojects\django-sqlserver\sqlserver\compiler.py", line 255, in as_sql
+    outer_fields, inner_select = self._alias_columns(inner_select)
+AttributeError: 'SQLCompiler' object has no attribute '_alias_columns'
+
+======================================================================
+ERROR: test_last_page (pagination.tests.ModelPaginationTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\tests\pagination\tests.py", line 277, in test_last_page
+    ordered=False
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\test\testcases.py", line 850, in assertQuerysetEqual
+    items = six.moves.map(transform, qs)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 141, in __iter__
+    self._fetch_all()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 966, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 265, in iterator
+    for row in compiler.results_iter():
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 701, in results_iter
+    for rows in self.execute_sql(MULTI):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 776, in execute_sql
+    sql, params = self.as_sql()
+  File "C:\Users\misha\pyprojects\django-sqlserver\sqlserver\compiler.py", line 255, in as_sql
+    outer_fields, inner_select = self._alias_columns(inner_select)
+AttributeError: 'SQLCompiler' object has no attribute '_alias_columns'
+
+======================================================================
+ERROR: test_ticket_18414 (queries.tests.ExistsSql)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\tests\queries\tests.py", line 1933, in test_ticket_18414
+    self.assertTrue(Article.objects.distinct()[1:3].exists())
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 606, in exists
+    return self.query.has_results(using=self.db)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\query.py", line 457, in has_results
+    return compiler.has_results()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 758, in has_results
+    return bool(self.execute_sql(SINGLE))
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 776, in execute_sql
+    sql, params = self.as_sql()
+  File "C:\Users\misha\pyprojects\django-sqlserver\sqlserver\compiler.py", line 255, in as_sql
+    outer_fields, inner_select = self._alias_columns(inner_select)
+AttributeError: 'SQLCompiler' object has no attribute '_alias_columns'
+
+======================================================================
+ERROR: test_params (raw_query.tests.RawQueryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\tests\raw_query\tests.py", line 128, in test_params
+    author = Author.objects.all()[2]
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 177, in __getitem__
+    return list(qs)[0]
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 141, in __iter__
+    self._fetch_all()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 966, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 265, in iterator
+    for row in compiler.results_iter():
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 701, in results_iter
+    for rows in self.execute_sql(MULTI):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 776, in execute_sql
+    sql, params = self.as_sql()
+  File "C:\Users\misha\pyprojects\django-sqlserver\sqlserver\compiler.py", line 255, in as_sql
+    outer_fields, inner_select = self._alias_columns(inner_select)
+AttributeError: 'SQLCompiler' object has no attribute '_alias_columns'
+
+======================================================================
+ERROR: test_pyformat_params (raw_query.tests.RawQueryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\test\testcases.py", line 946, in skip_wrapper
+    return test_func(*args, **kwargs)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\tests\raw_query\tests.py", line 143, in test_pyformat_params
+    author = Author.objects.all()[2]
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 177, in __getitem__
+    return list(qs)[0]
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 141, in __iter__
+    self._fetch_all()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 966, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 265, in iterator
+    for row in compiler.results_iter():
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 701, in results_iter
+    for rows in self.execute_sql(MULTI):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 776, in execute_sql
+    sql, params = self.as_sql()
+  File "C:\Users\misha\pyprojects\django-sqlserver\sqlserver\compiler.py", line 255, in as_sql
+    outer_fields, inner_select = self._alias_columns(inner_select)
+AttributeError: 'SQLCompiler' object has no attribute '_alias_columns'
+
+======================================================================
+ERROR: test_query_aggregation (timezones.tests.NewDatabaseTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\tests\timezones\tests.py", line 446, in test_query_aggregation
+    result = Event.objects.all().aggregate(Min('dt'), Max('dt'))
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 325, in aggregate
+    return query.get_aggregation(using=self.db, force_subq=force_subq)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\query.py", line 409, in get_aggregation
+    in zip(query.aggregate_select.items(), result)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\query.py", line 408, in <genexpr>
+    for (alias, aggregate), val
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\query.py", line 343, in resolve_aggregate
+    return self.convert_values(value, aggregate.field, connection)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\query.py", line 321, in convert_values
+    return connection.ops.convert_values(value, field)
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\lib\site-packages\sqlserver_ado\operations.py", line 403, in convert_values
+    value = self._convert_values_map[internal_type].to_python(value)
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\lib\site-packages\sqlserver_ado\fields.py", line 95, in to_python
+    result = timezone.make_aware(result, timezone.utc)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\utils\timezone.py", line 358, in make_aware
+    return timezone.localize(value, is_dst=None)
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\lib\site-packages\pytz\__init__.py", line 228, in localize
+    raise ValueError('Not naive datetime (tzinfo is already set)')
+ValueError: Not naive datetime (tzinfo is already set)
+
+======================================================================
+ERROR: test_query_annotation (timezones.tests.NewDatabaseTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\tests\timezones\tests.py", line 464, in test_query_annotation
+    transform=lambda d: d.dt)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\test\testcases.py", line 850, in assertQuerysetEqual
+    items = six.moves.map(transform, qs)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 141, in __iter__
+    self._fetch_all()
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 966, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\query.py", line 265, in iterator
+    for row in compiler.results_iter():
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 746, in results_iter
+    ) + tuple(row[aggregate_end:])
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\compiler.py", line 744, in <genexpr>
+    for (alias, aggregate), value
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\query.py", line 343, in resolve_aggregate
+    return self.convert_values(value, aggregate.field, connection)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\db\models\sql\query.py", line 321, in convert_values
+    return connection.ops.convert_values(value, field)
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\lib\site-packages\sqlserver_ado\operations.py", line 403, in convert_values
+    value = self._convert_values_map[internal_type].to_python(value)
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\lib\site-packages\sqlserver_ado\fields.py", line 95, in to_python
+    result = timezone.make_aware(result, timezone.utc)
+  File "c:\users\misha\pyprojects\django-sqlserver\env\src\django\django\utils\timezone.py", line 358, in make_aware
+    return timezone.localize(value, is_dst=None)
+  File "C:\Users\misha\pyprojects\django-sqlserver\env\lib\site-packages\pytz\__init__.py", line 228, in localize
+    raise ValueError('Not naive datetime (tzinfo is already set)')
+ValueError: Not naive datetime (tzinfo is already set)
+
+----------------------------------------------------------------------
+Ran 1465 tests in 1179.570s
+
+FAILED (errors=10, skipped=127, expected failures=8, unexpected successes=3)
+Creating test database for alias 'default'...
+Creating test database for alias 'other'...
+Destroying test database for alias 'default'...
+Destroying test database for alias 'other'...
