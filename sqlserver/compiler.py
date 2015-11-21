@@ -114,7 +114,11 @@ def _as_sql(self, with_limits=True, with_col_aliases=False, subquery=False):
         if for_update_part and not self.connection.features.for_update_after_from:
             result.append(for_update_part)
 
-        return ' '.join(result), tuple(params)
+        q = ' '.join(result)
+        # un-escape %% when no parameters passed
+        if not params:
+            q = q % ()
+        return q, tuple(params)
     finally:
         # Finally do cleanup - get rid of the joins we created above.
         self.query.reset_refcounts(refcounts_before)
