@@ -4,6 +4,21 @@ import django.db.models.sql.compiler
 import sqlserver_ado.compiler
 
 
+if django.VERSION >= (1, 9, 0):
+    def _get_where(compiler):
+        return compiler.where
+
+    def _get_having(compiler):
+        return compiler.having
+else:
+    def _get_where(compiler):
+        return compiler.query.where
+
+    def _get_having(compiler):
+        return compiler.query.having
+
+
+
 # monkey-patch django as_sql method
 # can be removed after django gets https://github.com/django/django/pull/5667
 def _as_sql(self, with_limits=True, with_col_aliases=False, subquery=False):
@@ -31,8 +46,8 @@ def _as_sql(self, with_limits=True, with_col_aliases=False, subquery=False):
         # docstring of get_from_clause() for details.
         from_, f_params = self.get_from_clause()
 
-        where, w_params = self.compile(self.query.where)
-        having, h_params = self.compile(self.query.having)
+        where, w_params = self.compile(_get_where(self)) if _get_where(self) is not None else ("", [])
+        having, h_params = self.compile(_get_having(self)) if _get_having(self) is not None else ("", [])
         params = []
         result = ['SELECT']
 

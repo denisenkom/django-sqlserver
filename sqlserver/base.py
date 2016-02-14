@@ -181,8 +181,3 @@ class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
             return False
         else:
             return True
-
-    def schema_editor(self, *args, **kwargs):
-        """Returns a new instance of this backend's SchemaEditor"""
-        from .schema import DatabaseSchemaEditor
-        return DatabaseSchemaEditor(self, *args, **kwargs)
