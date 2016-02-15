@@ -1,5 +1,5 @@
 set ROOT=%CD%
-if not defined DJANGO_VER set DJANGO_VER=1.7
+if not defined DJANGO_VER set DJANGO_VER=1.9
 if defined PYTHONHOME (set virtualenv=%PYTHONHOME%\scripts\virtualenv) else (set virtualenv=virtualenv)
 
 :: using system-site-packages to get pywin32 package which is not installable via pip
@@ -40,16 +40,16 @@ env\scripts\pip install -e .\pytds
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 :: cloning django-mssql repository
-if not exist env\src\django-mssql call git clone https://bitbucket.org/Manfre/django-mssql.git
+if not exist django-mssql call git clone git@bitbucket.org:denisenkom/django-mssql.git -b django1.9-support
 
-pushd env\src\django-mssql
+pushd django-mssql
 
 call git pull
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 popd
 
-env\scripts\pip install -e env\src\django-mssql
+env\scripts\pip install -e .\django-mssql
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 
