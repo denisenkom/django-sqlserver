@@ -12,6 +12,15 @@ In addition to django-mssql features this package also supports:
 - multiple NULLs in unique constraints
 - MSSQL 2008 support (2008 support is currently dropped in django-mssql)
 
+Installation
+------------
+
+.. code-block::
+
+   pip install git+https://denisenkom@bitbucket.org/denisenkom/django-mssql.git@django1.9-support#egg=django-mssql
+   pip install git+https://github.com/denisenkom/django-sqlserver.git@django1.9-support#egg=django-sqlserver
+
+
 Requirements
 ------------
 
@@ -53,7 +62,7 @@ If you use SQL server instance name provide it in SQLINSTANCE environment variab
 If your SQL server runs on host different from localhost you need to provide name of the host in HOST environment
 variable.
 
-By default tests are run against Django 1.7, if you want to test against different version specify it in DJANGO_VER
+By default tests are run against Django 1.9, if you want to test against different version specify it in DJANGO_VER
 environment variable.
 
 By default tests are run using default Python, if you want to use different Python version specify it's location
