@@ -30,7 +30,6 @@ Requirements
 SQL Server versions
 -------------------
 
-- 2008
 - 2012
 
 Status
