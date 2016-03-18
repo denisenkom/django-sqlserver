@@ -1,7 +1,17 @@
 #!/bin/bash
-set -e
+set -ex
 export LC_ALL=en_US.UTF-8
-virtualenv --no-site-packages --python=$PYTHONHOME/bin/python env
+
+if [ "$DJANGO_VER" = "" ]; then
+    DJANGO_VER=1.7
+fi
+
+python_exe=python
+if [ "$PYTHONHOME" != "" ]; then
+    python_exe=$PYTHONHOME/bin/python
+fi
+    
+virtualenv --no-site-packages --python=$python_exe env
 . env/bin/activate
 
 django_branch=stable/${DJANGO_VER}.x
@@ -14,12 +24,16 @@ git pull
 popd
 python env/bin/pip install -e env/src/django
 
-if [ $BACKEND = sqlserver.pytds ]; then
+BACKEND=${BACKEND-sqlserver.pytds}
+if [ "$BACKEND" = "sqlserver.pytds" ]; then
     python env/bin/pip install -e git+git://github.com/denisenkom/pytds.git#egg=pytds
 fi
-if [ $BACKEND = sqlserver.pymssql ]; then
-    python env/bin/pip install cython hg+https://denisenkom@code.google.com/r/denisenkom-pymssql/ --use-mirrors
+if [ "$BACKEND" = "sqlserver.pymssql" ]; then
+    python env/bin/pip install cython hg+https://denisenkom@code.google.com/r/denisenkom-pymssql/
 fi
-python env/bin/pip install pytz==2013d --use-mirrors
+python env/bin/pip install pytz==2013d
+
+python env/bin/pip install -e .
+
 export COMPUTERNAME=$HOST
 python tests/runtests.py --noinput --settings=test_mssql
