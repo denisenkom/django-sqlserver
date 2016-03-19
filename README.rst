@@ -17,8 +17,8 @@ Installation
 
 .. code-block::
 
-   pip install git+https://denisenkom@bitbucket.org/denisenkom/django-mssql.git@django1.9-support#egg=django-mssql
-   pip install git+https://github.com/denisenkom/django-sqlserver.git@django1.9-support#egg=django-sqlserver
+   pip install git+https://bitbucket.org/Manfre/django-mssql.git#egg=django-mssql
+   pip install git+https://github.com/denisenkom/django-sqlserver.git#egg=django-sqlserver
 
 
 Requirements
