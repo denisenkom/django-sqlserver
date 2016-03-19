@@ -1,11 +1,11 @@
 import os.path
 import subprocess
 import itertools
-import multiprocessing
 
 django_repo_url = 'https://github.com/django/django.git'
+mssql_repo_url = 'https://bitbucket.org/Manfre/django-mssql.git'
 python_versions = ['2.7', '3.3', '3.4', '3.5']
-django_versions = ['1.9', '1.8']
+django_versions = ['1.8', '1.9']
 pytds_versions = ['1.8.2']
 tests = ['aggregation',
          'aggregation_regress',
@@ -14,13 +14,13 @@ tests = ['aggregation',
          'm2m_and_m2o',
          'migrations',
          'migrations2',
-         #'model_fields',
-         #'model_regress',
-         #'multiple_database',
-         #'nested_foreign_keys',
-         #'null_fk',
-         #'null_fk_ordering',
-         #'null_queries',
+         'model_fields',
+         'model_regress',
+         'multiple_database',
+         'nested_foreign_keys',
+         'null_fk',
+         'null_fk_ordering',
+         'null_queries',
          #'ordering',
          #'pagination',
          #'queries',
@@ -31,10 +31,10 @@ tests = ['aggregation',
          #'select_related_onetoone',
          #'select_related_regress',
          #'servers',
-         #'timezones',
-         #'transactions',
-         #'update',
-         #'update_only_fields',
+         'timezones',
+         'transactions',
+         'update',
+         'update_only_fields',
          ]
 extra_tests = {
     '1.8': [
@@ -86,6 +86,18 @@ def run_tests(django_ver, pytds_ver):
     # install Django test requirements
     subprocess.check_call([venv_pip, 'install', '-r', os.path.join(django_folder, 'tests', 'requirements', 'py2.txt')])
 
+    mssql_folder = os.path.join(venv_folder, 'src', 'django-mssql')
+    if not os.path.isdir(mssql_folder):
+        subprocess.check_call([git_exe, 'clone', mssql_repo_url, mssql_folder])
+
+    # update django-mssql repo
+    subprocess.check_call([git_exe, 'pull'], cwd=mssql_folder)
+    subprocess.check_call([git_exe, 'checkout', '--force'], cwd=mssql_folder)
+
+    # apply patch on django-mssql
+    patch = os.path.join(root, 'django-mssql-patch.txt')
+    subprocess.check_call([git_exe, 'apply', patch], cwd=mssql_folder)
+
     # install pytds
     subprocess.check_call([venv_pip, 'install', 'python-tds=={}'.format(pytds_ver)])
 
@@ -94,12 +106,14 @@ def run_tests(django_ver, pytds_ver):
 
     runtests_path = os.path.join(django_folder, 'tests', 'runtests.py')
     env = os.environ.copy()
-    env['PYTHONPATH'] = ':'.join([django_folder, 'tests', '.'])
+    env['PYTHONPATH'] = ':'.join([django_folder, mssql_folder, 'tests', '.'])
     exclude_params = []  # ['--exclude-tag={}'.format(test) for test in exclude_tests]
     params = [venv_python, runtests_path, '--noinput', '--settings=test_mssql'] + exclude_params + tests
     subprocess.check_call(params, env=env)
 
 
-for django_ver in django_versions:
-    for pytds_ver in pytds_versions:
-        run_tests(django_ver, pytds_ver)
+if __name__ == '__main__':
+    for django_ver in django_versions:
+        for pytds_ver in pytds_versions:
+            run_tests(django_ver, pytds_ver)
+    print('PASS')
