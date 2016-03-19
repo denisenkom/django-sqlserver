@@ -77,5 +77,10 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'ERROR',
         },
+        'django.db': {
+            'handlers': ['console'],
+            # uncomment to enable logging of SQL statements
+            #'level': 'DEBUG',
+        },
     },
 }
