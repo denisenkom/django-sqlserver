@@ -10,7 +10,6 @@ In addition to django-mssql features this package also supports:
 
 - select_for_update
 - multiple NULLs in unique constraints
-- MSSQL 2008 support (2008 support is currently dropped in django-mssql)
 
 Installation
 ------------
