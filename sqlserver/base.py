@@ -99,6 +99,7 @@ class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
             'server': settings_dict['HOST'],
             'database': settings_dict['NAME'],
             'user': settings_dict['USER'],
+            'port': settings_dict.get('PORT', '1433'),
             'password': settings_dict['PASSWORD'],
             'timeout': self.command_timeout,
             'autocommit': autocommit,
