@@ -139,7 +139,7 @@ class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
                 "Unable to determine MS SQL server version. Only SQL 2008 or "
                 "newer is supported.", DeprecationWarning)
         else:
-            if sql_version < sqlserver_ado.base.VERSION_SQL2008:
+            if sql_version < sqlserver_ado.base.VERSION_SQL2012:
                 warnings.warn(
                     "This version of MS SQL server is no longer tested with "
                     "django-mssql and not officially supported/maintained.",
