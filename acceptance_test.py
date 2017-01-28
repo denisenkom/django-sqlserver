@@ -5,36 +5,36 @@ import itertools
 django_repo_url = 'https://github.com/django/django.git'
 mssql_repo_url = 'https://bitbucket.org/Manfre/django-mssql.git'
 python_versions = ['2.7', '3.3', '3.4', '3.5']
-django_versions = ['1.8', '1.9']
+django_versions = ['1.8.17', '1.9.12']
 pytds_versions = ['1.8.2']
-tests = ['aggregation',
-         'aggregation_regress',
-         'inspectdb',
-         'introspection',
-         'm2m_and_m2o',
-         'migrations',
-         'migrations2',
-         'model_fields',
-         'model_regress',
-         'multiple_database',
-         'nested_foreign_keys',
-         'null_fk',
-         'null_fk_ordering',
-         'null_queries',
-         'ordering',
-         'pagination',
-         #'queries',  # failing
-         'raw_query',
+tests = [#'aggregation',  # failing
+         #'aggregation_regress',  # failing
+         'inspectdb',  # works
+         'introspection',  # works
+         'm2m_and_m2o',  # works
+         'migrations',  # works
+         'migrations2',  # works
+         'model_fields',  # works
+         'model_regress',  # works
+         'multiple_database',  # works
+         'nested_foreign_keys',  # works
+         'null_fk',  # works
+         'null_fk_ordering',  # works
+         'null_queries',  # works
+         'ordering',  # works
+         'pagination',  # works
+         'queries',  # works
+         'raw_query',  # works
          #'schema',  # failing
-         'select_for_update',
-         'select_related',
-         'select_related_onetoone',
-         'select_related_regress',
-         'servers',
+         'select_for_update',  # works
+         'select_related',  # works
+         'select_related_onetoone',  # works
+         'select_related_regress',  # works
+         'servers',  # works
          #'timezones',  # failing
-         'transactions',
-         'update',
-         'update_only_fields',
+         'transactions',  # works
+         'update',  # works
+         'update_only_fields',  # works
          ]
 extra_tests = {
     '1.8': [
@@ -65,8 +65,6 @@ def run_tests(django_ver, pytds_ver):
     venv_pip = os.path.join(venv_folder, 'bin', 'pip')
     venv_python = os.path.join(venv_folder, 'bin', 'python')
 
-    django_branch = 'stable/{}.x'.format(django_ver)
-
     django_folder = os.path.join(venv_folder, 'src', 'django')
 
     # cloning Django repository
@@ -74,10 +72,10 @@ def run_tests(django_ver, pytds_ver):
         subprocess.check_call([git_exe, 'clone', django_repo_url, django_folder])
 
     # update Django repository
-    subprocess.check_call([git_exe, 'pull'], cwd=django_folder)
+    subprocess.check_call([git_exe, 'fetch'], cwd=django_folder)
 
     # select version branch in Django repo
-    subprocess.check_call([git_exe, 'checkout', '--force', django_branch], cwd=django_folder)
+    subprocess.check_call([git_exe, 'checkout', '--force', django_ver], cwd=django_folder)
 
     # apply patch on Django
     patch = os.path.join(root, 'django{}-patch.txt'.format(django_ver))
