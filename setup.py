@@ -32,6 +32,9 @@ setup(
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Database',
     ],
-    install_requires=['django-mssql>=1.7'],
+    install_requires=[
+        'python-tds',
+        'django-mssql>=1.7',
+    ],
     zip_safe=True,
 )
