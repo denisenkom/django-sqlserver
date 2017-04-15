@@ -1,8 +1,6 @@
 Django MSSQL Database Backend
 =============================
 
-Django 1.11 compatible fork.
-
 A minimal wrapper for django-mssql to make it work with python-tds.
 
 This package will try to connect using ADO first, and if it is not
