@@ -3,6 +3,7 @@ from __future__ import absolute_import, unicode_literals
 
 import warnings
 
+from django.db.backends.base.client import BaseDatabaseClient
 from django.utils.timezone import utc
 
 import sqlserver_ado
@@ -75,6 +76,12 @@ class DatabaseFeatures(sqlserver_ado.base.DatabaseFeatures):
 
 class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
     Database = Database
+    # Classes instantiated in __init__().
+    client_class = BaseDatabaseClient
+    creation_class = DatabaseCreation
+    features_class = DatabaseFeatures
+    introspection_class = DatabaseIntrospection
+    ops_class = DatabaseOperations
 
     def __init__(self, *args, **kwargs):
         super(DatabaseWrapper, self).__init__(*args, **kwargs)
@@ -153,7 +160,7 @@ class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
             self.features.supports_nullable_unique_constraints = True
             self.features.supports_partially_nullable_unique_constraints = True
 
-    def create_cursor_pytds(self):
+    def create_cursor_pytds(self, name=None):
         """Creates a cursor. Assumes that a connection is established."""
         cursor = self.connection.cursor()
         cursor.tzinfo_factory = self.tzinfo_factory
