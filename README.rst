@@ -51,9 +51,18 @@ Known Issues
 Testing
 -------
 
-This project integrates with Django's own test suite.  To run tests you need to install Microsoft SQL Server
-2012 or newer.  In SQL server create user sa with password sa, alternatively you can use different user but in this
+This project integrates with Django's own test suite.
+
+You need to install Python 2.7 or newer.
+
+You need to install virtualenv.
+
+To run tests you need to install Microsoft SQL Server 2012 or newer.
+
+In SQL server create user sa with password sa, alternatively you can use different user but in this
 case you should set SQLUSER and SQLPASSWORD environment variables.
+
+You should enable TCP/IP connections for SQL server.
 
 If you use SQL server instance name provide it in SQLINSTANCE environment variable.
 

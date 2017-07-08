@@ -40,7 +40,7 @@ env\scripts\pip install -e .\pytds
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 :: cloning django-mssql repository
-if not exist django-mssql call git clone git@bitbucket.org:denisenkom/django-mssql.git -b django1.9-support
+if not exist django-mssql call git clone https://denisenkom@bitbucket.org/denisenkom/django-mssql.git -b django1.9-support
 
 pushd django-mssql
 
@@ -63,4 +63,4 @@ env\scripts\pip install -e .
 set PYTHONPATH=%ROOT%\tests
 
 echo Running Django test suite...
-env\scripts\python env\src\django\tests\runtests.py --noinput --settings=test_mssql
+env\scripts\python env\src\django\tests\runtests.py --noinput --settings=test_mssql -v3
