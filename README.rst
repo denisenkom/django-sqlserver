@@ -69,16 +69,6 @@ If you use SQL server instance name provide it in SQLINSTANCE environment variab
 If your SQL server runs on host different from localhost you need to provide name of the host in HOST environment
 variable.
 
-By default tests are run against Django 1.9, if you want to test against different version specify it in DJANGO_VER
-environment variable.
+To run test run:
 
-By default tests are run using default Python, if you want to use different Python version specify it's location
-in PYTHONHOME environment variable.
-
-Now on Windows you can run:
-
-  ci.bat
-
-If you are on UNIX run:
-
-  ci.sh
+  python acceptance_test.py
