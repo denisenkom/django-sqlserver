@@ -1173,26 +1173,3 @@ class AggregateTestCase(TestCase):
         self.assertEqual(
             max_books_per_rating,
             {'books_per_rating__max': 3 + 5})
-
-    def test_expression_on_aggregation(self):
-        self.skipTest("TODO fix django.db.utils.OperationalError: 'GREATEST' is not a recognized built-in function name.")
-
-        # Create a plain expression
-        class Greatest(Func):
-            function = 'GREATEST'
-
-            def as_sqlite(self, compiler, connection):
-                return super(Greatest, self).as_sql(compiler, connection, function='MAX')
-
-        qs = Publisher.objects.annotate(
-            price_or_median=Greatest(Avg('book__rating'), Avg('book__price'))
-        ).filter(price_or_median__gte=F('num_awards')).order_by('num_awards')
-        self.assertQuerysetEqual(
-            qs, [1, 3, 7, 9], lambda v: v.num_awards)
-
-        qs2 = Publisher.objects.annotate(
-            rating_or_num_awards=Greatest(Avg('book__rating'), F('num_awards'),
-                                          output_field=FloatField())
-        ).filter(rating_or_num_awards__gt=F('num_awards')).order_by('num_awards')
-        self.assertQuerysetEqual(
-            qs2, [1, 3], lambda v: v.num_awards)

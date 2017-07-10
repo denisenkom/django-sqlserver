@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from datetime import datetime
 from operator import attrgetter
 
+import django
 from django.db.models import F
 from django.db.models.functions import Upper
 from django.test import TestCase
@@ -90,15 +91,14 @@ class OrderingTests(TestCase):
         )
 
     def test_order_by_nulls_first_and_last(self):
-        # TODO: fix
-        return
+        if django.VERSION < (1, 11, 0):
+            self.skipTest("Only run this on Django 1.11 or newer")
         msg = "nulls_first and nulls_last are mutually exclusive"
         with self.assertRaisesMessage(ValueError, msg):
             Article.objects.order_by(F("author").desc(nulls_last=True, nulls_first=True))
 
     def test_order_by_nulls_last(self):
-        # TODO: fix
-        return
+        self.skipTest("TODO fix django.db.utils.ProgrammingError: Incorrect syntax near 'NULLS'.")
         Article.objects.filter(headline="Article 3").update(author=self.author_1)
         Article.objects.filter(headline="Article 4").update(author=self.author_2)
         # asc and desc are chainable with nulls_last.
@@ -120,8 +120,7 @@ class OrderingTests(TestCase):
         )
 
     def test_order_by_nulls_first(self):
-        # TODO: fix
-        return
+        self.skipTest("TODO fix django.db.utils.ProgrammingError: Incorrect syntax near 'NULLS'.")
         Article.objects.filter(headline="Article 3").update(author=self.author_1)
         Article.objects.filter(headline="Article 4").update(author=self.author_2)
         # asc and desc are chainable with nulls_first.
