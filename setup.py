@@ -34,7 +34,7 @@ setup(
     ],
     install_requires=[
         'python-tds',
-        'django-mssql>=1.7',
+        'django-mssql>=1.8',
     ],
     zip_safe=True,
 )

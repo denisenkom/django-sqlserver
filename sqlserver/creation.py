@@ -49,60 +49,6 @@ class DatabaseCreation(creation.DatabaseCreation):
         list_of_sql.extend(queries)
         return list_of_sql, pending_references_dict
 
-    def enable_clr(self):
-        """ Enables clr for server if not already enabled
-
-        This function will not fail if current user doesn't have
-        permissions to enable clr, and clr is already enabled
-        """
-        with self._nodb_connection.cursor() as cursor:
-            # check whether clr is enabled
-            cursor.execute('''
-            SELECT value FROM sys.configurations
-            WHERE name = 'clr enabled'
-            ''')
-            res = cursor.fetchone()
-
-            if not res or not res[0]:
-                # if not enabled enable clr
-                cursor.execute("sp_configure 'clr enabled', 1")
-                cursor.execute("RECONFIGURE")
-
-    def install_regex_clr(self, database_name):
-        install_regex_sql = '''
-USE {database_name};
-
--- Drop and recreate the function if it already exists
-IF OBJECT_ID('REGEXP_LIKE') IS NOT NULL
-    DROP FUNCTION [dbo].[REGEXP_LIKE]
-
-IF EXISTS(select * from sys.assemblies where name like 'regex_clr')
-    DROP ASSEMBLY regex_clr
-;
-
-CREATE ASSEMBLY regex_clr
-FROM 0x{assembly_hex}
-WITH PERMISSION_SET = SAFE;
-
-create function [dbo].[REGEXP_LIKE]
-(
-    @input nvarchar(max),
-    @pattern nvarchar(max),
-    @caseSensitive int
-)
-RETURNS INT  AS
-EXTERNAL NAME regex_clr.UserDefinedFunctions.REGEXP_LIKE
-        '''.format(
-            database_name=self.connection.ops.quote_name(database_name),
-            assembly_hex=self.get_regex_clr_assembly_hex(),
-        ).split(';')
-
-        self.enable_clr()
-
-        with self._nodb_connection.cursor() as cursor:
-            for s in install_regex_sql:
-                cursor.execute(s)
-
     def create_test_db(self, *args, **kwargs):
         # replace mssql's create_test_db with standard create_test_db
         # this removes mark_tests_as_expected_failure, which
