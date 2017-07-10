@@ -200,8 +200,6 @@ class M2mThroughTests(TestCase):
 
     @skipUnlessDBFeature('supports_microsecond_precision')
     def test_order_by_relational_field_through_model(self):
-        # TODO: fix
-        return
         CustomMembership.objects.create(person=self.jim, group=self.rock)
         CustomMembership.objects.create(person=self.bob, group=self.rock)
         CustomMembership.objects.create(person=self.jane, group=self.roll)
