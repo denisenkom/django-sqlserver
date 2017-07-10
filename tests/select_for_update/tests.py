@@ -66,7 +66,6 @@ class SelectForUpdateTests(TransactionTestCase):
         The backend's FOR UPDATE variant appears in
         generated SQL when select_for_update is invoked.
         """
-        self.skipTest("TODO fix this test")
         with transaction.atomic(), CaptureQueriesContext(connection) as ctx:
             list(Person.objects.all().select_for_update())
         self.assertTrue(self.has_for_update_sql(ctx.captured_queries))
@@ -77,7 +76,6 @@ class SelectForUpdateTests(TransactionTestCase):
         The backend's FOR UPDATE NOWAIT variant appears in
         generated SQL when select_for_update is invoked.
         """
-        self.skipTest("TODO fix this test")
         with transaction.atomic(), CaptureQueriesContext(connection) as ctx:
             list(Person.objects.all().select_for_update(nowait=True))
         self.assertTrue(self.has_for_update_sql(ctx.captured_queries, nowait=True))
@@ -98,7 +96,6 @@ class SelectForUpdateTests(TransactionTestCase):
         If nowait is specified, we expect an error to be raised rather
         than blocking.
         """
-        self.skipTest("TODO fix this test")
         self.start_blocking_transaction()
         status = []
 
@@ -151,19 +148,9 @@ class SelectForUpdateTests(TransactionTestCase):
         DatabaseError is raised if a SELECT...FOR UPDATE SKIP LOCKED is run on
         a database backend that supports FOR UPDATE but not SKIP LOCKED.
         """
-        self.skipTest("TODO fix this test")
         with self.assertRaisesMessage(DatabaseError, 'SKIP LOCKED is not supported on this database backend.'):
             with transaction.atomic():
                 Person.objects.select_for_update(skip_locked=True).get()
-
-    @skipUnlessDBFeature('has_select_for_update')
-    def test_for_update_after_from(self):
-        self.skipTest("TODO fix this test")
-        features_class = connections['default'].features.__class__
-        attribute_to_patch = "%s.%s.for_update_after_from" % (features_class.__module__, features_class.__name__)
-        with mock.patch(attribute_to_patch, return_value=True):
-            with transaction.atomic():
-                self.assertIn('FOR UPDATE WHERE', str(Person.objects.filter(name='foo').select_for_update().query))
 
     @skipUnlessDBFeature('has_select_for_update')
     def test_for_update_requires_transaction(self):
@@ -215,7 +202,6 @@ class SelectForUpdateTests(TransactionTestCase):
         A thread running a select_for_update that accesses rows being touched
         by a similar operation on another connection blocks correctly.
         """
-        self.skipTest("TODO fix this test")
         # First, let's start the transaction in our thread.
         self.start_blocking_transaction()
 
@@ -298,13 +284,11 @@ class SelectForUpdateTests(TransactionTestCase):
 
     @skipUnlessDBFeature('has_select_for_update')
     def test_select_for_update_with_get(self):
-        self.skipTest("TODO fix this test")
         with transaction.atomic():
             person = Person.objects.select_for_update().get(name='Reinhardt')
         self.assertEqual(person.name, 'Reinhardt')
 
     def test_nowait_and_skip_locked(self):
-        self.skipTest("TODO fix this test")
         with self.assertRaisesMessage(ValueError, 'The nowait option cannot be used with skip_locked.'):
             Person.objects.select_for_update(nowait=True, skip_locked=True)
 
@@ -313,7 +297,6 @@ class SelectForUpdateTests(TransactionTestCase):
         Subqueries should respect ordering as an ORDER BY clause may be useful
         to specify a row locking order to prevent deadlocks (#27193).
         """
-        self.skipTest("TODO fix this test")
         with transaction.atomic():
             qs = Person.objects.filter(id__in=Person.objects.order_by('-id').select_for_update())
             self.assertIn('ORDER BY', str(qs.query))

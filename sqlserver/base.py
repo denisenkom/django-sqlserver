@@ -71,6 +71,7 @@ class DatabaseFeatures(sqlserver_ado.base.DatabaseFeatures):
 
     has_select_for_update = True
     has_select_for_update_nowait = True
+    has_select_for_update_skip_locked = True
     for_update_after_from = True
 
 

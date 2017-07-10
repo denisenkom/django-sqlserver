@@ -7,11 +7,13 @@ import datetime
 class DatabaseOperations(sqlserver_ado.operations.DatabaseOperations):
     compiler_module = "sqlserver.compiler"
 
-    def for_update_sql(self, nowait=False):
+    def for_update_sql(self, nowait=False, skip_locked=False):
+        hints = ['ROWLOCK', 'UPDLOCK']
         if nowait:
-            return "WITH (ROWLOCK, UPDLOCK, NOWAIT)"
-        else:
-            return "WITH (ROWLOCK, UPDLOCK)"
+            hints += ['NOWAIT']
+        if skip_locked:
+            hints += ['READPAST']
+        return "WITH ({})".format(','.join(hints))
 
     def value_to_db_date(self, value):
         if value is None:
