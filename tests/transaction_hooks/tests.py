@@ -209,8 +209,6 @@ class TestConnectionOnCommit(TransactionTestCase):
         self.assertDone([1])
 
     def test_hook_in_hook(self):
-        # TODO: fix
-        return
         def on_commit(i, add_hook):
             with transaction.atomic():
                 if add_hook:
