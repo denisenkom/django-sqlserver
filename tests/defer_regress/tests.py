@@ -267,15 +267,11 @@ class DeferDeletionSignalsTests(TestCase):
         self.post_delete_senders.append(sender)
 
     def test_delete_defered_model(self):
-        # TODO: fix
-        return
         Item.objects.only('value').get(pk=self.item_pk).delete()
         self.assertEqual(self.pre_delete_senders, [Item])
         self.assertEqual(self.post_delete_senders, [Item])
 
     def test_delete_defered_proxy_model(self):
-        # TODO: fix
-        return
         Proxy.objects.only('value').get(pk=self.item_pk).delete()
         self.assertEqual(self.pre_delete_senders, [Proxy])
         self.assertEqual(self.post_delete_senders, [Proxy])
