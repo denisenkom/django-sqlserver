@@ -51,4 +51,4 @@ before_test:
 
 
 test_script:
-  - python tests/runtests.py --noinput --settings=test_mssql -v3 --debug-sql
+  - python tests/runtests.py --noinput --settings=test_mssql --debug-sql
