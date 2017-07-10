@@ -495,18 +495,17 @@ class AggregateTestCase(TestCase):
         vals = Book.objects.annotate(num_authors=Count("authors__id")).aggregate(Avg("num_authors"))
         self.assertEqual(vals, {"num_authors__avg": Approximate(1.66, places=1)})
 
-    # TODO: fix this test
-    #def test_avg_duration_field(self):
-    #    # Explicit `output_field`.
-    #    self.assertEqual(
-    #        Publisher.objects.aggregate(Avg('duration', output_field=DurationField())),
-    #        {'duration__avg': datetime.timedelta(days=1, hours=12)}
-    #    )
-    #    # Implicit `output_field`.
-    #    self.assertEqual(
-    #        Publisher.objects.aggregate(Avg('duration')),
-    #        {'duration__avg': datetime.timedelta(days=1, hours=12)}
-    #    )
+    def test_avg_duration_field(self):
+        # Explicit `output_field`.
+        self.assertEqual(
+            Publisher.objects.aggregate(Avg('duration', output_field=DurationField())),
+            {'duration__avg': datetime.timedelta(days=1, hours=12)}
+        )
+        # Implicit `output_field`.
+        self.assertEqual(
+            Publisher.objects.aggregate(Avg('duration')),
+            {'duration__avg': datetime.timedelta(days=1, hours=12)}
+        )
 
     def test_sum_duration_field(self):
         self.assertEqual(
@@ -825,8 +824,6 @@ class AggregateTestCase(TestCase):
         returned twice because there are books from 2008 with a different
         number of authors.
         """
-        # TODO fix this test on SQL Server 2014
-        return
         dates = Book.objects.annotate(num_authors=Count("authors")).dates('pubdate', 'year')
         self.assertQuerysetEqual(
             dates, [
@@ -1170,25 +1167,25 @@ class AggregateTestCase(TestCase):
             max_books_per_rating,
             {'books_per_rating__max': 3 + 5})
 
-    # TODO: fix this test
-    #def test_expression_on_aggregation(self):
+    def test_expression_on_aggregation(self):
+        self.skipTest("TODO fix django.db.utils.OperationalError: 'GREATEST' is not a recognized built-in function name.")
 
-    #    # Create a plain expression
-    #    class Greatest(Func):
-    #        function = 'GREATEST'
+        # Create a plain expression
+        class Greatest(Func):
+            function = 'GREATEST'
 
-    #        def as_sqlite(self, compiler, connection):
-    #            return super(Greatest, self).as_sql(compiler, connection, function='MAX')
+            def as_sqlite(self, compiler, connection):
+                return super(Greatest, self).as_sql(compiler, connection, function='MAX')
 
-    #    qs = Publisher.objects.annotate(
-    #        price_or_median=Greatest(Avg('book__rating'), Avg('book__price'))
-    #    ).filter(price_or_median__gte=F('num_awards')).order_by('num_awards')
-    #    self.assertQuerysetEqual(
-    #        qs, [1, 3, 7, 9], lambda v: v.num_awards)
+        qs = Publisher.objects.annotate(
+            price_or_median=Greatest(Avg('book__rating'), Avg('book__price'))
+        ).filter(price_or_median__gte=F('num_awards')).order_by('num_awards')
+        self.assertQuerysetEqual(
+            qs, [1, 3, 7, 9], lambda v: v.num_awards)
 
-    #    qs2 = Publisher.objects.annotate(
-    #        rating_or_num_awards=Greatest(Avg('book__rating'), F('num_awards'),
-    #                                      output_field=FloatField())
-    #    ).filter(rating_or_num_awards__gt=F('num_awards')).order_by('num_awards')
-    #    self.assertQuerysetEqual(
-    #        qs2, [1, 3], lambda v: v.num_awards)
+        qs2 = Publisher.objects.annotate(
+            rating_or_num_awards=Greatest(Avg('book__rating'), F('num_awards'),
+                                          output_field=FloatField())
+        ).filter(rating_or_num_awards__gt=F('num_awards')).order_by('num_awards')
+        self.assertQuerysetEqual(
+            qs2, [1, 3], lambda v: v.num_awards)

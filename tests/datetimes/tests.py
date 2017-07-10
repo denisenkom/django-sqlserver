@@ -80,8 +80,7 @@ class DateTimesTests(TestCase):
 
     @override_settings(USE_TZ=True)
     def test_21432(self):
-        # TODO: fix this test
-        return
+        self.skipTest("TODO fix AssertionError: datet[20 chars], 9, 16, 59, 32, tzinfo=<DstTzInfo 'America/Ch[27 chars]DST>) != datet[20 chars], 9, 22, 59, 32, tzinfo=<DstTzInfo 'America/Ch[27 chars]DST>)")
         now = timezone.localtime(timezone.now().replace(microsecond=0))
         Article.objects.create(title="First one", pub_date=now)
         qs = Article.objects.datetimes('pub_date', 'second')
@@ -145,8 +144,6 @@ class DateTimesTests(TestCase):
             datetime.datetime(2005, 7, 28, 0, 0)])
 
     def test_datetimes_disallows_date_fields(self):
-        # TODO: fix this test
-        return
         dt = datetime.datetime(2005, 7, 28, 12, 15)
         Article.objects.create(pub_date=dt, published_on=dt.date(), title="Don't put dates into datetime functions!")
         with self.assertRaisesMessage(ValueError, "Cannot truncate DateField 'published_on' to DateTimeField"):

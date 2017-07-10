@@ -185,8 +185,7 @@ class BulkCreateTests(TestCase):
         self.assertEqual(TwoFields.objects.count(), num_objs)
 
     def test_empty_model(self):
-        # TODO: fix this test
-        return
+        self.skipTest("TODO fix ZeroDivisionError: integer division or modulo by zero")
         NoFields.objects.bulk_create([NoFields() for i in range(2)])
         self.assertEqual(NoFields.objects.count(), 2)
 
