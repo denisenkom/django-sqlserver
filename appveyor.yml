@@ -15,10 +15,10 @@ environment:
       DJANGOVER: 1.11
       SQLINSTANCE: SQL2016
     - PYTHON: "C:\\Python36"
-      DJANGOVER: 1.9
+      DJANGOVER: 1.10.7
       SQLINSTANCE: SQL2016
     - PYTHON: "C:\\Python36"
-      DJANGOVER: 1.10
+      DJANGOVER: 1.9.13
       SQLINSTANCE: SQL2016
     - PYTHON: "C:\\Python36"
       DJANGOVER: 1.11
