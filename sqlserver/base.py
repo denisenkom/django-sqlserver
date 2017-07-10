@@ -180,6 +180,15 @@ class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
         minor = (self.connection.product_version & 0xff0000) >> 16
         return '{}.{}'.format(major, minor)
 
+    def get_server_version(self, make_connection=True):
+        if not self.connection and make_connection:
+            self.connect()
+        major = (self.connection.product_version & 0xff000000) >> 24
+        minor = (self.connection.product_version & 0xff0000) >> 16
+        p1 = (self.connection.product_version & 0xff00) >> 8
+        p2 = self.connection.product_version & 0xff
+        return major, minor, p1, p2
+
     def is_usable(self):
         try:
             # Use a mssql cursor directly, bypassing Django's utilities.
