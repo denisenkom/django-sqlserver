@@ -3,25 +3,32 @@ import itertools
 import unittest
 from copy import copy
 
+import django
 from django.db import (
     DatabaseError, IntegrityError, OperationalError, connection,
 )
 from django.db.models import Model
 from django.db.models.deletion import CASCADE, PROTECT
 from django.db.models.fields import (
-    AutoField, BigAutoField, BigIntegerField, BinaryField, BooleanField,
+    AutoField, BigIntegerField, BinaryField, BooleanField,
     CharField, DateField, DateTimeField, IntegerField, PositiveIntegerField,
     SlugField, TextField, TimeField,
 )
+if django.VERSION >= (1, 10, 0):
+    from django.db.models.fields import BigAutoField
+
 from django.db.models.fields.related import (
     ForeignKey, ForeignObject, ManyToManyField, OneToOneField,
 )
-from django.db.models.indexes import Index
+if django.VERSION >= (1, 11, 0):
+    from django.db.models.indexes import Index
 from django.db.transaction import TransactionManagementError, atomic
 from django.test import (
     TransactionTestCase, mock, skipIfDBFeature, skipUnlessDBFeature,
 )
-from django.test.utils import CaptureQueriesContext, isolate_apps
+from django.test.utils import CaptureQueriesContext
+if django.VERSION >= (1, 10, 0):
+    from django.test.utils import isolate_apps
 from django.utils import timezone
 
 from .fields import (
@@ -287,36 +294,37 @@ class SchemaTests(TransactionTestCase):
             editor.alter_field(Author, new_field2, new_field, strict=True)
         self.assertForeignKeyNotExists(Author, 'tag_id', 'schema_tag')
 
-    @isolate_apps('schema')
-    def test_no_db_constraint_added_during_primary_key_change(self):
-        """
-        When a primary key that's pointed to by a ForeignKey with
-        db_constraint=False is altered, a foreign key constraint isn't added.
-        """
-        class Author(Model):
-            class Meta:
-                app_label = 'schema'
+    if django.VERSION >= (1, 10, 0):
+        @isolate_apps('schema')
+        def test_no_db_constraint_added_during_primary_key_change(self):
+            """
+            When a primary key that's pointed to by a ForeignKey with
+            db_constraint=False is altered, a foreign key constraint isn't added.
+            """
+            class Author(Model):
+                class Meta:
+                    app_label = 'schema'
 
-        class BookWeak(Model):
-            author = ForeignKey(Author, CASCADE, db_constraint=False)
+            class BookWeak(Model):
+                author = ForeignKey(Author, CASCADE, db_constraint=False)
 
-            class Meta:
-                app_label = 'schema'
+                class Meta:
+                    app_label = 'schema'
 
-        with connection.schema_editor() as editor:
-            editor.create_model(Author)
-            editor.create_model(BookWeak)
-        self.assertForeignKeyNotExists(BookWeak, 'author_id', 'schema_author')
-        old_field = Author._meta.get_field('id')
-        new_field = BigAutoField(primary_key=True)
-        new_field.model = Author
-        new_field.set_attributes_from_name('id')
-        # @isolate_apps() and inner models are needed to have the model
-        # relations populated, otherwise this doesn't act as a regression test.
-        self.assertEqual(len(new_field.model._meta.related_objects), 1)
-        with connection.schema_editor() as editor:
-            editor.alter_field(Author, old_field, new_field, strict=True)
-        self.assertForeignKeyNotExists(BookWeak, 'author_id', 'schema_author')
+            with connection.schema_editor() as editor:
+                editor.create_model(Author)
+                editor.create_model(BookWeak)
+            self.assertForeignKeyNotExists(BookWeak, 'author_id', 'schema_author')
+            old_field = Author._meta.get_field('id')
+            new_field = BigAutoField(primary_key=True)
+            new_field.model = Author
+            new_field.set_attributes_from_name('id')
+            # @isolate_apps() and inner models are needed to have the model
+            # relations populated, otherwise this doesn't act as a regression test.
+            self.assertEqual(len(new_field.model._meta.related_objects), 1)
+            with connection.schema_editor() as editor:
+                editor.alter_field(Author, old_field, new_field, strict=True)
+            self.assertForeignKeyNotExists(BookWeak, 'author_id', 'schema_author')
 
     def _test_m2m_db_constraint(self, M2MFieldClass):
         class LocalAuthorWithM2M(Model):

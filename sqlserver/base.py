@@ -79,6 +79,9 @@ class DatabaseFeatures(sqlserver_ado.base.DatabaseFeatures):
     supports_bitwise_leftshift = False
     supports_bitwise_rightshift = False
 
+    # probably can be implemented
+    can_introspect_default = False
+
 
 class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
     Database = Database
