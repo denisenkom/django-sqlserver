@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+import django
 from django.core.exceptions import FieldError
 from django.test import SimpleTestCase, TestCase
 
@@ -175,6 +176,8 @@ class ReverseSelectRelatedTestCase(TestCase):
             self.assertEqual(p.child1.child4.value4, 4)
 
     def test_inheritance_deferred(self):
+        if django.VERSION < (1, 10, 0):
+            self.skipTest('does not work on older version of Django')
         c = Child4.objects.create(name1='n1', name2='n2', value=1, value4=4)
         with self.assertNumQueries(1):
             p = Parent2.objects.select_related('child1').only(
@@ -191,6 +194,8 @@ class ReverseSelectRelatedTestCase(TestCase):
             self.assertEqual(p.child1.name2, 'n2')
 
     def test_inheritance_deferred2(self):
+        if django.VERSION < (1, 10, 0):
+            self.skipTest('does not work on older version of Django')
         c = Child4.objects.create(name1='n1', name2='n2', value=1, value4=4)
         qs = Parent2.objects.select_related('child1', 'child1__child4').only(
             'id2', 'child1__value', 'child1__child4__value4')
@@ -209,6 +214,8 @@ class ReverseSelectRelatedTestCase(TestCase):
             self.assertEqual(p.child1.child4.name1, 'n1')
 
     def test_self_relation(self):
+        if django.VERSION < (1, 11, 0):
+            self.skipTest("does not work on older version of Django")
         item1 = LinkedList.objects.create(name='item1')
         LinkedList.objects.create(name='item2', previous_item=item1)
         with self.assertNumQueries(1):
