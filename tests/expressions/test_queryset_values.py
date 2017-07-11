@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+import django
 from django.db.models.aggregates import Sum
 from django.db.models.expressions import F
 from django.test import TestCase
@@ -24,6 +25,8 @@ class ValuesExpressionsTests(TestCase):
         )
 
     def test_values_expression(self):
+        if django.VERSION < (1, 11, 0):
+            self.skipTest("does not work on older django")
         self.assertSequenceEqual(
             Company.objects.values(salary=F('ceo__salary')),
             [{'salary': 10}, {'salary': 20}, {'salary': 30}],
@@ -32,6 +35,8 @@ class ValuesExpressionsTests(TestCase):
     def test_values_expression_group_by(self):
         # values() applies annotate() first, so values selected are grouped by
         # id, not firstname.
+        if django.VERSION < (1, 11, 0):
+            self.skipTest("does not work on older django")
         Employee.objects.create(firstname='Joe', lastname='Jones', salary=2)
         joes = Employee.objects.filter(firstname='Joe')
         self.assertSequenceEqual(
@@ -44,6 +49,8 @@ class ValuesExpressionsTests(TestCase):
         )
 
     def test_chained_values_with_expression(self):
+        if django.VERSION < (1, 11, 0):
+            self.skipTest("does not work on older django")
         Employee.objects.create(firstname='Joe', lastname='Jones', salary=2)
         joes = Employee.objects.filter(firstname='Joe').values('firstname')
         self.assertSequenceEqual(
@@ -56,9 +63,13 @@ class ValuesExpressionsTests(TestCase):
         )
 
     def test_values_list_expression(self):
+        if django.VERSION < (1, 11, 0):
+            self.skipTest("does not work on older django")
         companies = Company.objects.values_list('name', F('ceo__salary'))
         self.assertSequenceEqual(companies, [('Example Inc.', 10), ('Foobar Ltd.', 20), ('Test GmbH', 30)])
 
     def test_values_list_expression_flat(self):
+        if django.VERSION < (1, 11, 0):
+            self.skipTest("does not work on older django")
         companies = Company.objects.values_list(F('ceo__salary'), flat=True)
         self.assertSequenceEqual(companies, (10, 20, 30))

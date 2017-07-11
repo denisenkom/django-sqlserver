@@ -74,6 +74,11 @@ class DatabaseFeatures(sqlserver_ado.base.DatabaseFeatures):
     has_select_for_update_skip_locked = True
     for_update_after_from = True
 
+    # mssql does not have bit shift operations
+    # but we can implement such using */ 2^x
+    supports_bitwise_leftshift = False
+    supports_bitwise_rightshift = False
+
 
 class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
     Database = Database
