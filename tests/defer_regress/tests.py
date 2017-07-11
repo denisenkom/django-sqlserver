@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from operator import attrgetter
 
+import django
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sessions.backends.db import SessionStore
 from django.db import models
@@ -267,11 +268,15 @@ class DeferDeletionSignalsTests(TestCase):
         self.post_delete_senders.append(sender)
 
     def test_delete_defered_model(self):
+        if django.VERSION < (1, 10, 0):
+            self.skipTest('This does not work on older Django')
         Item.objects.only('value').get(pk=self.item_pk).delete()
         self.assertEqual(self.pre_delete_senders, [Item])
         self.assertEqual(self.post_delete_senders, [Item])
 
     def test_delete_defered_proxy_model(self):
+        if django.VERSION < (1, 10, 0):
+            self.skipTest('This does not work on older Django')
         Proxy.objects.only('value').get(pk=self.item_pk).delete()
         self.assertEqual(self.pre_delete_senders, [Proxy])
         self.assertEqual(self.post_delete_senders, [Proxy])

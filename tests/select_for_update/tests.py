@@ -5,6 +5,7 @@ import time
 
 from multiple_database.routers import TestRouter
 
+import django
 from django.db import (
     DatabaseError, connection, connections, router, transaction,
 )
@@ -70,7 +71,6 @@ class SelectForUpdateTests(TransactionTestCase):
             list(Person.objects.all().select_for_update())
         self.assertTrue(self.has_for_update_sql(ctx.captured_queries))
 
-    @skipUnlessDBFeature('has_select_for_update_nowait')
     def test_for_update_sql_generated_nowait(self):
         """
         The backend's FOR UPDATE NOWAIT variant appears in
@@ -80,12 +80,13 @@ class SelectForUpdateTests(TransactionTestCase):
             list(Person.objects.all().select_for_update(nowait=True))
         self.assertTrue(self.has_for_update_sql(ctx.captured_queries, nowait=True))
 
-    @skipUnlessDBFeature('has_select_for_update_skip_locked')
     def test_for_update_sql_generated_skip_locked(self):
         """
         The backend's FOR UPDATE SKIP LOCKED variant appears in
         generated SQL when select_for_update is invoked.
         """
+        if django.VERSION < (1, 11, 0):
+            self.skipTest('Only available on Django 1.11 and newer')
         with transaction.atomic(), CaptureQueriesContext(connection) as ctx:
             list(Person.objects.all().select_for_update(skip_locked=True))
         self.assertTrue(self.has_for_update_sql(ctx.captured_queries, skip_locked=True))
@@ -111,12 +112,13 @@ class SelectForUpdateTests(TransactionTestCase):
         self.end_blocking_transaction()
         self.assertIsInstance(status[-1], DatabaseError)
 
-    @skipUnlessDBFeature('has_select_for_update_skip_locked')
     def test_skip_locked_skips_locked_rows(self):
         """
         If skip_locked is specified, the locked row is skipped resulting in
         Person.DoesNotExist.
         """
+        if django.VERSION < (1, 11, 0):
+            self.skipTest('Only available on Django 1.11 and newer')
         self.start_blocking_transaction()
         status = []
         thread = threading.Thread(
@@ -289,6 +291,8 @@ class SelectForUpdateTests(TransactionTestCase):
         self.assertEqual(person.name, 'Reinhardt')
 
     def test_nowait_and_skip_locked(self):
+        if django.VERSION < (1, 11, 0):
+            self.skipTest('This does not work on older Django')
         with self.assertRaisesMessage(ValueError, 'The nowait option cannot be used with skip_locked.'):
             Person.objects.select_for_update(nowait=True, skip_locked=True)
 
@@ -297,6 +301,8 @@ class SelectForUpdateTests(TransactionTestCase):
         Subqueries should respect ordering as an ORDER BY clause may be useful
         to specify a row locking order to prevent deadlocks (#27193).
         """
+        if django.VERSION < (1, 11, 0):
+            self.skipTest('This does not work on older Django')
         with transaction.atomic():
             qs = Person.objects.filter(id__in=Person.objects.order_by('-id').select_for_update())
             self.assertIn('ORDER BY', str(qs.query))
