@@ -4,10 +4,13 @@ import unittest
 import warnings
 from datetime import datetime
 
+import django
 from django.core.paginator import (
     EmptyPage, InvalidPage, PageNotAnInteger, Paginator,
-    UnorderedObjectListWarning,
 )
+if django.VERSION >= (1, 11, 0):
+    from django.core.paginator import UnorderedObjectListWarning
+
 from django.test import TestCase
 from django.utils import six
 
@@ -322,6 +325,8 @@ class ModelPaginationTests(TestCase):
         self.assertIsInstance(p.object_list, list)
 
     def test_paginating_unordered_queryset_raises_warning(self):
+        if django.VERSION < (1, 11, 0):
+            self.skipTest("does not work on older version of Django")
         with warnings.catch_warnings(record=True) as warns:
             # Prevent the RuntimeWarning subclass from appearing as an
             # exception due to the warnings.simplefilter() in runtests.py.
@@ -342,6 +347,8 @@ class ModelPaginationTests(TestCase):
         Unordered object list warning with an object that has an orderd
         attribute but not a model attribute.
         """
+        if django.VERSION < (1, 11, 0):
+            self.skipTest("does not work on older version of Django")
         class ObjectList():
             ordered = False
         object_list = ObjectList()
