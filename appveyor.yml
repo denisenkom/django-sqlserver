@@ -9,10 +9,10 @@ environment:
   DATABASE: test
   matrix:
     - PYTHON: "C:\\Python36"
-      DJANGOVER: 1.11
+      DJANGOVER: 1.11.3
       SQLINSTANCE: SQL2016
     - PYTHON: "C:\\Python27"
-      DJANGOVER: 1.11
+      DJANGOVER: 1.11.3
       SQLINSTANCE: SQL2016
     - PYTHON: "C:\\Python36"
       DJANGOVER: 1.10.7
@@ -21,10 +21,10 @@ environment:
       DJANGOVER: 1.9.13
       SQLINSTANCE: SQL2016
     - PYTHON: "C:\\Python36"
-      DJANGOVER: 1.11
+      DJANGOVER: 1.11.3
       SQLINSTANCE: SQL2014
     - PYTHON: "C:\\Python36"
-      DJANGOVER: 1.11
+      DJANGOVER: 1.11.3
       SQLINSTANCE: SQL2012SP1
 
 install:
