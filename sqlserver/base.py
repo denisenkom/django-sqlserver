@@ -197,13 +197,3 @@ class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
         p1 = (self.connection.product_version & 0xff00) >> 8
         p2 = self.connection.product_version & 0xff
         return major, minor, p1, p2
-
-    def is_usable(self):
-        try:
-            # Use a mssql cursor directly, bypassing Django's utilities.
-            with self.connection.cursor() as cursor:
-                cursor.execute("SELECT 1")
-        except:
-            return False
-        else:
-            return True
