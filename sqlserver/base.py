@@ -3,24 +3,20 @@ from __future__ import absolute_import, unicode_literals
 import datetime
 import collections
 
-import warnings
-
-import django
-from django.db.backends.base.client import BaseDatabaseClient
+import django.db.backends.base.client
 from django.utils.timezone import utc
 
 import sqlserver_ado
 import sqlserver_ado.base
 import sqlserver_ado.compiler
+import sqlserver_ado.operations
+import sqlserver_ado.introspection
+import sqlserver_ado.creation
 
 try:
     import pytds
 except ImportError:
     raise Exception('pytds is not available, to install pytds run pip install python-tds')
-
-from sqlserver_ado.introspection import DatabaseIntrospection
-from sqlserver_ado.creation import DatabaseCreation
-from sqlserver_ado.operations import DatabaseOperations
 
 try:
     import pytz
@@ -40,113 +36,11 @@ def utc_tzinfo_factory(offset):
     return utc
 
 
-class DatabaseFeatures(sqlserver_ado.base.DatabaseFeatures):
-    # Dict of test import path and list of versions on which it fails
-
-    if django.VERSION >= (1, 11, 0):
-        has_select_for_update = True
-        has_select_for_update_nowait = True
-        has_select_for_update_skip_locked = True
-        for_update_after_from = True
-
-    # mssql does not have bit shift operations
-    # but we can implement such using */ 2^x
-    supports_bitwise_leftshift = False
-    supports_bitwise_rightshift = False
-
-    # probably can be implemented
-    can_introspect_default = False
-
-
-if django.VERSION >= (1, 11, 0):
-    # django 1.11 or newer
-
-    # monkey patch django-mssql to support Django 1.11
-    # can be removed once django-mssql begins to support Django 1.11
-    def _django_11_mssql_monkeypatch_as_sql(self, with_limits=True, with_col_aliases=False):
-        # Get out of the way if we're not a select query or there's no limiting involved.
-        has_limit_offset = with_limits and (self.query.low_mark or self.query.high_mark is not None)
-        try:
-            if not has_limit_offset:
-                # The ORDER BY clause is invalid in views, inline functions,
-                # derived tables, subqueries, and common table expressions,
-                # unless TOP or FOR XML is also specified.
-                setattr(self.query, '_mssql_ordering_not_allowed', with_col_aliases)
-
-            # let the base do its thing, but we'll handle limit/offset
-            sql, fields = super(sqlserver_ado.compiler.SQLCompiler, self).as_sql(
-                with_limits=False,
-                with_col_aliases=with_col_aliases,
-            )
-
-            if has_limit_offset:
-                if ' order by ' not in sql.lower():
-                    # Must have an ORDER BY to slice using OFFSET/FETCH. If
-                    # there is none, use the first column, which is typically a
-                    # PK
-                    sql += ' ORDER BY 1'
-                sql += ' OFFSET %d ROWS' % (self.query.low_mark or 0)
-                if self.query.high_mark is not None:
-                    sql += ' FETCH NEXT %d ROWS ONLY' % (self.query.high_mark - self.query.low_mark)
-        finally:
-            if not has_limit_offset:
-                # remove in case query is ever reused
-                delattr(self.query, '_mssql_ordering_not_allowed')
-
-        return sql, fields
-
-
-    sqlserver_ado.compiler.SQLCompiler.as_sql = _django_11_mssql_monkeypatch_as_sql
-
-    # monkey patch DatabaseOperations to support select_for_update
-    # this can be removed once it is merged into django-mssql
-    def _for_update_sql(self, nowait=False, skip_locked=False):
-        hints = ['ROWLOCK', 'UPDLOCK']
-        if nowait:
-            hints += ['NOWAIT']
-        if skip_locked:
-            hints += ['READPAST']
-        return "WITH ({})".format(','.join(hints))
-
-
-    DatabaseOperations.for_update_sql = _for_update_sql
-
-
-    # mokey patch DatabaseOperations to support Django 1.11
-    # this can be removed once it is merged into django-mssql
-    def _value_to_db_date(self, value):
-        if value is None:
-            return None
-        if isinstance(value, datetime.datetime):
-            value = value.date()
-        return value.isoformat()
-
-
-    DatabaseOperations.value_to_db_date = _value_to_db_date
-
-
-# add adoConn property to connection class which is expected by django-mssql
-# this can be removed if django-mssql would not use this property
-pytds.Connection.adoConn = collections.namedtuple('AdoConn', 'Properties')(Properties=[])
-
-
+#
+# Main class which uses pytds as a driver instead of adodb
+#
 class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
     Database = pytds
-    # Classes instantiated in __init__().
-    client_class = BaseDatabaseClient
-    creation_class = DatabaseCreation
-    features_class = DatabaseFeatures
-    introspection_class = DatabaseIntrospection
-    ops_class = DatabaseOperations
-
-    def __init__(self, *args, **kwargs):
-        super(DatabaseWrapper, self).__init__(*args, **kwargs)
-
-        # following lines can be removed once django-mssql
-        # is doing the same as below
-        self.features = self.features_class(self)
-        self.ops = self.ops_class(self)
-        self.introspection = self.introspection_class(self)
 
     def get_connection_params(self):
         """Returns a dict of parameters suitable for get_new_connection."""
@@ -176,12 +70,6 @@ class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
 
         return conn_params
 
-    def get_new_connection(self, conn_params):
-        """Opens a connection to the database."""
-        self.__connection_string = conn_params.get('connection_string', '')
-        conn = self.Database.connect(**conn_params)
-        return conn
-
     def create_cursor(self, name=None):
         """Creates a cursor. Assumes that a connection is established."""
         cursor = self.connection.cursor()
@@ -203,3 +91,131 @@ class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
         p1 = (self.connection.product_version & 0xff00) >> 8
         p2 = self.connection.product_version & 0xff
         return major, minor, p1, p2
+
+
+#
+# Next goes monkey patches which can be removed once those changes are merged into respective packages
+#
+
+#
+# monkey patch DatabaseFeatures class
+#
+if django.VERSION >= (1, 11, 0):
+    sqlserver_ado.base.DatabaseFeatures.has_select_for_update = True
+    sqlserver_ado.base.DatabaseFeatures.has_select_for_update_nowait = True
+    sqlserver_ado.base.DatabaseFeatures.has_select_for_update_skip_locked = True
+    sqlserver_ado.base.DatabaseFeatures.for_update_after_from = True
+
+# mssql does not have bit shift operations
+# but we can implement such using */ 2^x
+sqlserver_ado.base.DatabaseFeatures.supports_bitwise_leftshift = False
+sqlserver_ado.base.DatabaseFeatures.supports_bitwise_rightshift = False
+
+# probably can be implemented
+sqlserver_ado.base.DatabaseFeatures.can_introspect_default = False
+
+
+#
+# monkey patch SQLCompiler class
+#
+def _call_base_as_sql_old(self, with_limits=True, with_col_aliases=False, subquery=False):
+    return super(sqlserver_ado.compiler.SQLCompiler, self).as_sql(
+        with_limits=with_limits,
+        with_col_aliases=with_col_aliases,
+        subquery=subquery,
+    )
+
+
+def _call_base_as_sql_new(self, with_limits=True, with_col_aliases=False, subquery=False):
+    return super(sqlserver_ado.compiler.SQLCompiler, self).as_sql(
+        with_limits=with_limits,
+        with_col_aliases=with_col_aliases,
+    )
+
+
+def _as_sql(self, with_limits=True, with_col_aliases=False, subquery=False):
+    # Get out of the way if we're not a select query or there's no limiting involved.
+    has_limit_offset = with_limits and (self.query.low_mark or self.query.high_mark is not None)
+    try:
+        if not has_limit_offset:
+            # The ORDER BY clause is invalid in views, inline functions,
+            # derived tables, subqueries, and common table expressions,
+            # unless TOP or FOR XML is also specified.
+            setattr(self.query, '_mssql_ordering_not_allowed', with_col_aliases)
+
+        # let the base do its thing, but we'll handle limit/offset
+        sql, fields = self._call_base_as_sql(
+            with_limits=False,
+            with_col_aliases=with_col_aliases,
+            subquery=subquery,
+        )
+
+        if has_limit_offset:
+            if ' order by ' not in sql.lower():
+                # Must have an ORDER BY to slice using OFFSET/FETCH. If
+                # there is none, use the first column, which is typically a
+                # PK
+                sql += ' ORDER BY 1'
+            sql += ' OFFSET %d ROWS' % (self.query.low_mark or 0)
+            if self.query.high_mark is not None:
+                sql += ' FETCH NEXT %d ROWS ONLY' % (self.query.high_mark - self.query.low_mark)
+    finally:
+        if not has_limit_offset:
+            # remove in case query is ever reused
+            delattr(self.query, '_mssql_ordering_not_allowed')
+
+    return sql, fields
+
+
+if django.VERSION < (1, 11, 0):
+    sqlserver_ado.compiler.SQLCompiler._call_base_as_sql = _call_base_as_sql_old
+else:
+    sqlserver_ado.compiler.SQLCompiler._call_base_as_sql = _call_base_as_sql_new
+sqlserver_ado.compiler.SQLCompiler.as_sql = _as_sql
+
+#
+# monkey patch DatabaseOperations to support select_for_update
+#
+def _for_update_sql(self, nowait=False, skip_locked=False):
+    hints = ['ROWLOCK', 'UPDLOCK']
+    if nowait:
+        hints += ['NOWAIT']
+    if skip_locked:
+        hints += ['READPAST']
+    return "WITH ({})".format(','.join(hints))
+
+
+def _value_to_db_date(self, value):
+    if value is None:
+        return None
+    if isinstance(value, datetime.datetime):
+        value = value.date()
+    return value.isoformat()
+
+
+sqlserver_ado.operations.DatabaseOperations.for_update_sql = _for_update_sql
+sqlserver_ado.operations.DatabaseOperations.value_to_db_date = _value_to_db_date
+
+
+# monkey patch adoConn property onto connection class which is expected by django-mssql
+# this can be removed if django-mssql would not use this property
+pytds.Connection.adoConn = collections.namedtuple('AdoConn', 'Properties')(Properties=[])
+
+
+#
+# monkey patch sqlserver_ado.base.DatabaseWrapper class
+#
+def _get_new_connection(self, conn_params):
+    """Opens a connection to the database."""
+    self.__connection_string = conn_params.get('connection_string', '')
+    conn = self.Database.connect(**conn_params)
+    return conn
+
+
+sqlserver_ado.base.DatabaseWrapper.get_new_connection = _get_new_connection
+sqlserver_ado.base.DatabaseWrapper.client_class = django.db.backends.base.client.BaseDatabaseClient
+sqlserver_ado.base.DatabaseWrapper.creation_class = sqlserver_ado.creation.DatabaseCreation
+sqlserver_ado.base.DatabaseWrapper.features_class = sqlserver_ado.base.DatabaseFeatures
+sqlserver_ado.base.DatabaseWrapper.introspection_class = sqlserver_ado.introspection.DatabaseIntrospection
+sqlserver_ado.base.DatabaseWrapper.ops_class = sqlserver_ado.operations.DatabaseOperations
+
