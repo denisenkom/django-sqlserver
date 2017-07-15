@@ -10,19 +10,8 @@ import sqlserver_ado
 import sqlserver_ado.base
 
 try:
-    from sqlserver_ado import dbapi as ado_dbapi
-    __import__('pythoncom')
-except ImportError:
-    ado_dbapi = None
-
-try:
     import pytds
 except ImportError:
-    pytds = None
-
-if pytds is not None:
-    Database = pytds
-else:
     raise Exception('pytds is not available, to install pytds run pip install python-tds')
 
 from sqlserver_ado.introspection import DatabaseIntrospection
@@ -34,6 +23,7 @@ try:
 except ImportError:
     pytz = None
 
+Database = pytds
 DatabaseError = Database.DatabaseError
 IntegrityError = Database.IntegrityError
 
@@ -159,10 +149,7 @@ class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
                     "This version of MS SQL server is no longer tested with "
                     "django-mssql and not officially supported/maintained.",
                     DeprecationWarning)
-        if self.Database is pytds:
-            self.features.supports_paramstyle_pyformat = True
-            # only pytds support new sql server date types
-            self.features.supports_microsecond_precision = True
+        self.features.supports_paramstyle_pyformat = True
         if self.settings_dict["OPTIONS"].get("allow_nulls_in_unique_constraints", True):
             self.features.ignores_nulls_in_unique_constraints = True
             self.features.supports_nullable_unique_constraints = True
@@ -182,10 +169,7 @@ class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
         """
         Returns the 'DBMS Version' string
         """
-        if not self.connection and make_connection:
-            self.connect()
-        major = (self.connection.product_version & 0xff000000) >> 24
-        minor = (self.connection.product_version & 0xff0000) >> 16
+        major, minor, _, _ = self.get_server_version(make_connection=make_connection)
         return '{}.{}'.format(major, minor)
 
     def get_server_version(self, make_connection=True):
