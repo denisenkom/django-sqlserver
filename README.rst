@@ -4,6 +4,9 @@ Django MSSQL Database Backend
 .. image:: https://ci.appveyor.com/api/projects/status/hj5o8fhpllcfypte/branch/master?svg=true
     :target: https://ci.appveyor.com/project/denisenkom/django-sqlserver
 
+.. image:: https://codecov.io/gh/denisenkom/django-sqlserver/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/denisenkom/django-sqlserver
+
 A minimal wrapper for django-mssql to make it work with python-tds.
 
 This package will try to connect using ADO first, and if it is not
