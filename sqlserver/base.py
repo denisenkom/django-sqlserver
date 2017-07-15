@@ -92,7 +92,6 @@ class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
         self.get_connection_params = self.get_connection_params_pytds
         self.create_cursor = self.create_cursor_pytds
         self.__get_dbms_version = self.__get_dbms_version_pytds
-        self._set_autocommit = self._set_autocommit_pytds
 
     def get_connection_params_pytds(self):
         """Returns a dict of parameters suitable for get_new_connection."""
@@ -161,9 +160,6 @@ class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
         cursor.tzinfo_factory = self.tzinfo_factory
         error_wrapper = self.wrap_database_errors
         return _CursorWrapper(cursor, error_wrapper)
-
-    def _set_autocommit_pytds(self, value):
-        self.connection.autocommit = value
 
     def __get_dbms_version_pytds(self, make_connection=True):
         """
