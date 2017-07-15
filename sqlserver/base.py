@@ -23,9 +23,8 @@ try:
 except ImportError:
     pytz = None
 
-Database = pytds
-DatabaseError = Database.DatabaseError
-IntegrityError = Database.IntegrityError
+DatabaseError = pytds.DatabaseError
+IntegrityError = pytds.IntegrityError
 
 
 _SUPPORTED_OPTIONS = ['failover_partner']
@@ -35,23 +34,6 @@ def utc_tzinfo_factory(offset):
     if offset != 0:
         raise AssertionError("database connection isn't set to UTC")
     return utc
-
-
-class _CursorWrapper(object):
-    """Used to intercept database errors for cursor's __next__ method"""
-    def __init__(self, cursor, error_wrapper):
-        self._cursor = cursor
-        self._error_wrapper = error_wrapper
-        self.execute = cursor.execute
-        self.fetchall = cursor.fetchall
-
-    def __getattr__(self, attr):
-        return getattr(self._cursor, attr)
-
-    def __iter__(self):
-        with self._error_wrapper:
-            for item in self._cursor:
-                yield item
 
 
 class DatabaseFeatures(sqlserver_ado.base.DatabaseFeatures):
@@ -72,7 +54,7 @@ class DatabaseFeatures(sqlserver_ado.base.DatabaseFeatures):
 
 
 class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
-    Database = Database
+    Database = pytds
     # Classes instantiated in __init__().
     client_class = BaseDatabaseClient
     creation_class = DatabaseCreation
@@ -154,8 +136,7 @@ class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
         """Creates a cursor. Assumes that a connection is established."""
         cursor = self.connection.cursor()
         cursor.tzinfo_factory = self.tzinfo_factory
-        error_wrapper = self.wrap_database_errors
-        return _CursorWrapper(cursor, error_wrapper)
+        return cursor
 
     def __get_dbms_version(self, make_connection=True):
         """
