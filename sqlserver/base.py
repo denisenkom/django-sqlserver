@@ -1,6 +1,7 @@
 """Microsoft SQL Server database backend for Django."""
 from __future__ import absolute_import, unicode_literals
 import datetime
+import collections
 
 import warnings
 
@@ -124,6 +125,11 @@ if django.VERSION >= (1, 11, 0):
     DatabaseOperations.value_to_db_date = _value_to_db_date
 
 
+# add adoConn property to connection class which is expected by django-mssql
+# this can be removed if django-mssql would not use this property
+pytds.Connection.adoConn = collections.namedtuple('AdoConn', 'Properties')(Properties=[])
+
+
 class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
     Database = pytds
     # Classes instantiated in __init__().
@@ -175,33 +181,6 @@ class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
         self.__connection_string = conn_params.get('connection_string', '')
         conn = self.Database.connect(**conn_params)
         return conn
-
-    def init_connection_state(self):
-        """Initializes the database connection settings."""
-        # if 'mars connection=true' in self.__connection_string.lower():
-        #     # Issue #41 - Cannot use MARS with savepoints
-        #     self.features.uses_savepoints = False
-        # cache the properties on the connection
-        if hasattr(self.connection, 'adoConn'):
-            self.connection.adoConnProperties = dict([(x.Name, x.Value) for x in self.connection.adoConn.Properties])
-
-        try:
-            sql_version = int(self.__get_dbms_version().split('.', 2)[0])
-        except (IndexError, ValueError):
-            warnings.warn(
-                "Unable to determine MS SQL server version. Only SQL 2008 or "
-                "newer is supported.", DeprecationWarning)
-        else:
-            if sql_version < sqlserver_ado.base.VERSION_SQL2012:
-                warnings.warn(
-                    "This version of MS SQL server is no longer tested with "
-                    "django-mssql and not officially supported/maintained.",
-                    DeprecationWarning)
-        self.features.supports_paramstyle_pyformat = True
-        if self.settings_dict["OPTIONS"].get("allow_nulls_in_unique_constraints", True):
-            self.features.ignores_nulls_in_unique_constraints = True
-            self.features.supports_nullable_unique_constraints = True
-            self.features.supports_partially_nullable_unique_constraints = True
 
     def create_cursor(self, name=None):
         """Creates a cursor. Assumes that a connection is established."""
