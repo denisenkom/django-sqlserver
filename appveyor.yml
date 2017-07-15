@@ -34,7 +34,7 @@ install:
   - pip install django==%DJANGOVER%
   - pip install enum34
   - pip install python-memcached <= 1.53
-  - pip install mock
+  - pip install mock codecov
   - pip install -e .
 
 build_script:
@@ -51,4 +51,5 @@ before_test:
 
 
 test_script:
-  - python tests/runtests.py --noinput --settings=test_mssql --debug-sql
+  - coverage run tests/runtests.py --noinput --settings=test_mssql --debug-sql
+  - codecov
