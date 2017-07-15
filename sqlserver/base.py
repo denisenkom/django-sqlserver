@@ -3,6 +3,7 @@ from __future__ import absolute_import, unicode_literals
 
 import warnings
 
+import django
 from django.db.backends.base.client import BaseDatabaseClient
 from django.utils.timezone import utc
 
@@ -39,10 +40,11 @@ def utc_tzinfo_factory(offset):
 class DatabaseFeatures(sqlserver_ado.base.DatabaseFeatures):
     # Dict of test import path and list of versions on which it fails
 
-    has_select_for_update = True
-    has_select_for_update_nowait = True
-    has_select_for_update_skip_locked = True
-    for_update_after_from = True
+    if django.VERSION >= (1, 11, 0):
+        has_select_for_update = True
+        has_select_for_update_nowait = True
+        has_select_for_update_skip_locked = True
+        for_update_after_from = True
 
     # mssql does not have bit shift operations
     # but we can implement such using */ 2^x
