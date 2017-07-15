@@ -89,11 +89,7 @@ class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
         self.ops = self.ops_class(self)
         self.introspection = self.introspection_class(self)
 
-        self.get_connection_params = self.get_connection_params_pytds
-        self.create_cursor = self.create_cursor_pytds
-        self.__get_dbms_version = self.__get_dbms_version_pytds
-
-    def get_connection_params_pytds(self):
+    def get_connection_params(self):
         """Returns a dict of parameters suitable for get_new_connection."""
         from django.conf import settings
         settings_dict = self.settings_dict
@@ -154,14 +150,14 @@ class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
             self.features.supports_nullable_unique_constraints = True
             self.features.supports_partially_nullable_unique_constraints = True
 
-    def create_cursor_pytds(self, name=None):
+    def create_cursor(self, name=None):
         """Creates a cursor. Assumes that a connection is established."""
         cursor = self.connection.cursor()
         cursor.tzinfo_factory = self.tzinfo_factory
         error_wrapper = self.wrap_database_errors
         return _CursorWrapper(cursor, error_wrapper)
 
-    def __get_dbms_version_pytds(self, make_connection=True):
+    def __get_dbms_version(self, make_connection=True):
         """
         Returns the 'DBMS Version' string
         """
