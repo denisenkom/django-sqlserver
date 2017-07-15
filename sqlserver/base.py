@@ -22,10 +22,8 @@ except ImportError:
 
 if pytds is not None:
     Database = pytds
-elif ado_dbapi is not None:
-    Database = ado_dbapi
 else:
-    raise Exception('Both ado and pytds are not available, to install pytds run pip install python-tds')
+    raise Exception('pytds is not available, to install pytds run pip install python-tds')
 
 from sqlserver_ado.introspection import DatabaseIntrospection
 from .operations import DatabaseOperations
@@ -95,15 +93,16 @@ class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
     def __init__(self, *args, **kwargs):
         super(DatabaseWrapper, self).__init__(*args, **kwargs)
 
-        self.features = DatabaseFeatures(self)
-        self.ops = DatabaseOperations(self)
-        self.creation = DatabaseCreation(self)
-        self.introspection = DatabaseIntrospection(self)
-        if self.Database is pytds:
-            self.get_connection_params = self.get_connection_params_pytds
-            self.create_cursor = self.create_cursor_pytds
-            self.__get_dbms_version = self.__get_dbms_version_pytds
-            self._set_autocommit = self._set_autocommit_pytds
+        # following lines can be removed once django-mssql
+        # is doing the same as below
+        self.features = self.features_class(self)
+        self.ops = self.ops_class(self)
+        self.introspection = self.introspection_class(self)
+
+        self.get_connection_params = self.get_connection_params_pytds
+        self.create_cursor = self.create_cursor_pytds
+        self.__get_dbms_version = self.__get_dbms_version_pytds
+        self._set_autocommit = self._set_autocommit_pytds
 
     def get_connection_params_pytds(self):
         """Returns a dict of parameters suitable for get_new_connection."""
