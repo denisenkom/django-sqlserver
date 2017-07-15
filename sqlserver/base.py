@@ -1,5 +1,6 @@
 """Microsoft SQL Server database backend for Django."""
 from __future__ import absolute_import, unicode_literals
+import datetime
 
 import warnings
 
@@ -9,6 +10,7 @@ from django.utils.timezone import utc
 
 import sqlserver_ado
 import sqlserver_ado.base
+import sqlserver_ado.compiler
 
 try:
     import pytds
@@ -16,8 +18,8 @@ except ImportError:
     raise Exception('pytds is not available, to install pytds run pip install python-tds')
 
 from sqlserver_ado.introspection import DatabaseIntrospection
-from .operations import DatabaseOperations
 from sqlserver_ado.creation import DatabaseCreation
+from sqlserver_ado.operations import DatabaseOperations
 
 try:
     import pytz
@@ -53,6 +55,73 @@ class DatabaseFeatures(sqlserver_ado.base.DatabaseFeatures):
 
     # probably can be implemented
     can_introspect_default = False
+
+
+if django.VERSION >= (1, 11, 0):
+    # django 1.11 or newer
+
+    # monkey patch django-mssql to support Django 1.11
+    # can be removed once django-mssql begins to support Django 1.11
+    def _django_11_mssql_monkeypatch_as_sql(self, with_limits=True, with_col_aliases=False):
+        # Get out of the way if we're not a select query or there's no limiting involved.
+        has_limit_offset = with_limits and (self.query.low_mark or self.query.high_mark is not None)
+        try:
+            if not has_limit_offset:
+                # The ORDER BY clause is invalid in views, inline functions,
+                # derived tables, subqueries, and common table expressions,
+                # unless TOP or FOR XML is also specified.
+                setattr(self.query, '_mssql_ordering_not_allowed', with_col_aliases)
+
+            # let the base do its thing, but we'll handle limit/offset
+            sql, fields = super(sqlserver_ado.compiler.SQLCompiler, self).as_sql(
+                with_limits=False,
+                with_col_aliases=with_col_aliases,
+            )
+
+            if has_limit_offset:
+                if ' order by ' not in sql.lower():
+                    # Must have an ORDER BY to slice using OFFSET/FETCH. If
+                    # there is none, use the first column, which is typically a
+                    # PK
+                    sql += ' ORDER BY 1'
+                sql += ' OFFSET %d ROWS' % (self.query.low_mark or 0)
+                if self.query.high_mark is not None:
+                    sql += ' FETCH NEXT %d ROWS ONLY' % (self.query.high_mark - self.query.low_mark)
+        finally:
+            if not has_limit_offset:
+                # remove in case query is ever reused
+                delattr(self.query, '_mssql_ordering_not_allowed')
+
+        return sql, fields
+
+
+    sqlserver_ado.compiler.SQLCompiler.as_sql = _django_11_mssql_monkeypatch_as_sql
+
+    # monkey patch DatabaseOperations to support select_for_update
+    # this can be removed once it is merged into django-mssql
+    def _for_update_sql(self, nowait=False, skip_locked=False):
+        hints = ['ROWLOCK', 'UPDLOCK']
+        if nowait:
+            hints += ['NOWAIT']
+        if skip_locked:
+            hints += ['READPAST']
+        return "WITH ({})".format(','.join(hints))
+
+
+    DatabaseOperations.for_update_sql = _for_update_sql
+
+
+    # mokey patch DatabaseOperations to support Django 1.11
+    # this can be removed once it is merged into django-mssql
+    def _value_to_db_date(self, value):
+        if value is None:
+            return None
+        if isinstance(value, datetime.datetime):
+            value = value.date()
+        return value.isoformat()
+
+
+    DatabaseOperations.value_to_db_date = _value_to_db_date
 
 
 class DatabaseWrapper(sqlserver_ado.base.DatabaseWrapper):
