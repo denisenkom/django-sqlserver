@@ -9,13 +9,22 @@ Django MSSQL Database Backend
 
 A minimal wrapper for django-mssql to make it work with python-tds.
 
-This package will try to connect using ADO first, and if it is not
-available it will try python-tds second.
-
 In addition to django-mssql features this package also supports:
 
 - select_for_update
 - multiple NULLs in unique constraints
+
+Supported MSSQL versions:
+
+- 2012
+- 2014
+- 2016
+
+Requirements
+------------
+
+- django-mssql, version 1.6.x
+- Python 2.7 or 3.6
 
 Installation
 ------------
@@ -25,17 +34,25 @@ Installation
    pip install git+https://bitbucket.org/Manfre/django-mssql.git#egg=django-mssql
    pip install git+https://github.com/denisenkom/django-sqlserver.git#egg=django-sqlserver
 
+Configuration
+-------------
 
-Requirements
-------------
+You would need to add database configuration, here is example:
 
-- django-mssql, version 1.6.x
-- Python 2.7 or 3.3
+.. code-block:: python
 
-SQL Server versions
--------------------
+    DATABASES = {
+        'default': {
+            'ENGINE': 'sqlserver',
+            'HOST': 'mysqlserverhost\\instance',  # Replace with host name where you have MSSQL server running
+            'NAME': 'mydbname',  # Replace with name of the database on the MSSQL server
+            'USER': 'username',  # Replace with user name
+            'PASSWORD': '*****',  # Replace with password
+        },
 
-- 2012
+
+You can also specify additional OPTIONS attribute as described in
+http://django-mssql.readthedocs.io/en/latest/settings.html#options
 
 Status
 ------
