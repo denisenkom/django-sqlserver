@@ -27,7 +27,15 @@ DatabaseError = pytds.DatabaseError
 IntegrityError = pytds.IntegrityError
 
 
-_SUPPORTED_OPTIONS = ['failover_partner']
+_SUPPORTED_OPTIONS = [
+    'dsn', 'timeout',
+    'login_timeout', 'as_dict',
+    'appname', 'tds_version',
+    'blocksize', 'auth',
+    'readonly', 'bytes_to_unicode',
+    'row_strategy', 'cafile',
+    'validate_host', 'enc_login_only',
+]
 
 
 def utc_tzinfo_factory(offset):
